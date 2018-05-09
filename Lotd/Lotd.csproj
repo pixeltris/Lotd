@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3CEE9063-52DD-4379-8B5C-12B298EAF623}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Lotd</RootNamespace>
+    <AssemblyName>Lotd</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="UI\AnimationsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AnimationsForm.Designer.cs">
+      <DependentUpon>AnimationsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DuelStarterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\DuelStarterForm.Designer.cs">
+      <DependentUpon>DuelStarterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CardCollection.cs" />
+    <Compile Include="DuelSeries.cs" />
+    <Compile Include="Endian.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="FileFormats\bin\CardLimits.cs" />
+    <Compile Include="FileFormats\bin\CardManager.cs" />
+    <Compile Include="FileFormats\bin\RelatedCardData.cs" />
+    <Compile Include="FileFormats\main\ArenaData.cs" />
+    <Compile Include="FileFormats\main\ScriptData.cs" />
+    <Compile Include="FileFormats\misc\Dfymoo.cs" />
+    <Compile Include="FileFormats\packs\BattlePackData.cs" />
+    <Compile Include="FileFormats\main\CharData.cs" />
+    <Compile Include="FileFormats\misc\Credits.cs" />
+    <Compile Include="FileFormats\main\DeckData.cs" />
+    <Compile Include="FileFormats\main\DuelData.cs" />
+    <Compile Include="FileFormats\misc\HowToPlay.cs" />
+    <Compile Include="FileFormats\main\PackDefData.cs" />
+    <Compile Include="FileFormats\RawFileData.cs" />
+    <Compile Include="FileFormats\packs\ShopPackData.cs" />
+    <Compile Include="FileFormats\main\SkuData.cs" />
+    <Compile Include="FileFormats\misc\StringBnd.cs" />
+    <Compile Include="FileFormats\ZibData.cs" />
+    <Compile Include="NativeScript\MemTools.Actions.cs" />
+    <Compile Include="NativeScript\MemTools.Addresses.cs" />
+    <Compile Include="NativeScript\MemTools.cs" />
+    <Compile Include="NativeScript\MemTools.Structures.cs" />
+    <Compile Include="NativeScript\MemTools.TimeMultiplier.cs" />
+    <Compile Include="NativeScript\NativeScript.Globals.cs" />
+    <Compile Include="NativeScript\MemTools.PInvoke.cs" />
+    <Compile Include="NativeScript\NativeScriptCompiler.cs" />
+    <Compile Include="NativeScript\NativeScript.Generated.cs" />
+    <Compile Include="SaveData\BattlePackSaveData.cs" />
+    <Compile Include="SaveData\CampaignSaveData.cs" />
+    <Compile Include="SaveData\CardListSaveData.cs" />
+    <Compile Include="SaveData\DeckSaveData.cs" />
+    <Compile Include="SaveData\GameSaveData.Helpers.cs" />
+    <Compile Include="SaveData\GameSaveData.XorTable.cs" />
+    <Compile Include="LocalizedText.cs" />
+    <Compile Include="LotdDirectory.cs" />
+    <Compile Include="LotdFile.cs" />
+    <Compile Include="FileFormats\FileData.cs" />
+    <Compile Include="LotdFileType.cs" />
+    <Compile Include="SaveData\GameSaveData.cs" />
+    <Compile Include="LotdArchive.cs" />
+    <Compile Include="Manager.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveData\MiscSaveData.cs" />
+    <Compile Include="SaveData\SaveDataChunk.cs" />
+    <Compile Include="SaveData\StatSaveData.cs" />
+    <Compile Include="UI\UIExtensions.cs" />
+    <Compile Include="UI\SimpleSaveDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SimpleSaveDataForm.Designer.cs">
+      <DependentUpon>SimpleSaveDataForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\AnimationsForm.resx">
+      <DependentUpon>AnimationsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DuelStarterForm.resx">
+      <DependentUpon>DuelStarterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SimpleSaveDataForm.resx">
+      <DependentUpon>SimpleSaveDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
