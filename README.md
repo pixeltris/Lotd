@@ -48,5 +48,5 @@ TODO: Create a list of animations which are useful to block.
 
 # Related Projects
 
-https://github.com/Arefu/Wolf
+https://github.com/Arefu/Wolf  
 https://github.com/thomasneff/YGOLOTDPatchDraft
