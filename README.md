@@ -16,7 +16,7 @@ P1/P2/P3/P4 buttons sets the given player index to the selected deck. (P1 = play
 **Skip Rock Paper Scissors:** This will skip the rock paper scissors screen.  
 **Full Reload:** This will go to the main menu before loading which reduces rendering issues but can increase loading times. Generally this should always be enabled to avoid issues.  
 **Rewards:** Rewards will be given for this duel (win cards / duel points).  
-Starting Player: Who starts the duel.  
+**Starting Player:** Who starts the duel.  
 **Duel Arena:** The duel arena to play on.  
 **Life Points:** The number of starting life points for this duel.  
 **Start Hand:** The number of starting hand cards.  
@@ -45,3 +45,8 @@ Starting Player: Who starts the duel.
 This can be used to block many animations / actions which are played during a duel. This is useful for animations which take a long time to complete and make things less fun. Blocking some animations / actions will softlock the duel or cause side effects so be careful.  
 Use the log checkbox to log animations. Click an animation and click block / unblock to block the selected animation.  
 TODO: Create a list of animations which are useful to block.
+
+# Related Projects
+
+https://github.com/Arefu/Wolf
+https://github.com/thomasneff/YGOLOTDPatchDraft
