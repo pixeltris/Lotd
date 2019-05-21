@@ -40,9 +40,9 @@ namespace Lotd
 
         public void Load()
         {
-            if (string.IsNullOrEmpty(InstallDirectory))
+            if (string.IsNullOrEmpty(InstallDirectory) || !Directory.Exists(InstallDirectory))
             {
-                throw new Exception("Invalid directory: " + InstallDirectory);
+                throw new Exception("Couldn't find the install directory for Legacy of the Duelist '" + InstallDirectory + "'");
             }
 
             string tocPath = Path.Combine(InstallDirectory, TocFileName);
@@ -381,6 +381,7 @@ namespace Lotd
         public static string GetInstallDirectory()
         {
             string installDir = null;
+
             try
             {
                 using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
@@ -397,6 +398,28 @@ namespace Lotd
             catch
             {
             }
+
+            if (string.IsNullOrEmpty(installDir) || !Directory.Exists(installDir))
+            {
+                try
+                {
+                    using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+                    {
+                        using (var key = root.OpenSubKey(@"SOFTWARE\Valve\Steam"))
+                        {
+                            if (key != null)
+                            {
+                                string steamDir = key.GetValue("InstallPath").ToString();
+                                installDir = Path.Combine(steamDir, "steamapps", "common", "Yu-Gi-Oh! Legacy of the Duelist");
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+            }
+
             return installDir;
         }
     }
