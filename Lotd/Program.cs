@@ -38,6 +38,8 @@ namespace Lotd
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new DuelStarterForm());
+
+            MemTools.StopProcessWatcher();
         }
 
         public static void UnlockDLC()

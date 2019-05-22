@@ -177,6 +177,54 @@ namespace Lotd
             ydkIdToOfficialId.Clear();
             officialIdToYdkId.Clear();
 
+            Dictionary<string, CardInfo> alternativeCardNames = new Dictionary<string, CardInfo>();
+            foreach (CardInfo card in Program.Manager.CardManager.Cards.Values)
+            {
+                string name = card.Name.English;
+                bool alternativeName = false;
+                if (name.Contains("#"))
+                {
+                    name = name.Replace("#", string.Empty);
+                    alternativeName = true;
+                }
+                if (name.Contains("・"))
+                {
+                    name = name.Replace("・", string.Empty);
+                    alternativeName = true;
+                }
+                if (name.Contains("β"))
+                {
+                    name = name.Replace("β", "B");
+                    alternativeName = true;
+                }
+                if (name.Contains("α"))
+                {
+                    name = name.Replace("α", "Alpha");
+                    alternativeName = true;
+                }
+                if (name.Contains("The"))
+                {
+                    name = name.Replace("The", "the");
+                    alternativeName = true;
+                }
+                if (alternativeName)
+                {
+                    alternativeCardNames[name] = card;
+                }
+            }
+            // Manually fix a few others
+            alternativeCardNames["Necrolancer the Time-lord"] = Program.Manager.CardManager.Cards[4149];//Necrolancer the Timelord
+            alternativeCardNames["LaLa Li-Oon"] = Program.Manager.CardManager.Cards[4197];//LaLa Li-oon
+            alternativeCardNames["Master  Expert"] = Program.Manager.CardManager.Cards[4254];//Master & Expert
+            alternativeCardNames["Man-Eating Black Shark"] = Program.Manager.CardManager.Cards[4571];//Man-eating Black Shark
+            alternativeCardNames["Muko"] = Program.Manager.CardManager.Cards[5362];//Null and Void
+            alternativeCardNames["After The Struggle"] = Program.Manager.CardManager.Cards[5394];//After the Struggle
+            alternativeCardNames["Vampiric Orchis"] = Program.Manager.CardManager.Cards[5588];//Vampire Orchis
+            alternativeCardNames["B.E.S. Big Core"] = Program.Manager.CardManager.Cards[6199];//Big Core
+            alternativeCardNames["Supernatural Regeneration"] = Program.Manager.CardManager.Cards[8072];//Metaphysical Regeneration
+            alternativeCardNames["Silent Graveyard"] = Program.Manager.CardManager.Cards[8835];//Forbidden Graveyard
+            alternativeCardNames["Vampiric Koala"] = Program.Manager.CardManager.Cards[8858];//Vampire Koala
+
             using (WebClient client = new WebClient())
             {
                 client.Proxy = null;
@@ -189,6 +237,10 @@ namespace Lotd
                         if (!ydkIdToOfficialId.ContainsKey(card.id))
                         {
                             CardInfo cardInfo = Program.Manager.CardManager.FindCardByName(Language.English, card.name);
+                            if (cardInfo == null)
+                            {
+                                alternativeCardNames.TryGetValue(card.name, out cardInfo);
+                            }
                             if (cardInfo != null)
                             {
                                 ydkIdToOfficialId[card.id] = cardInfo.CardId;

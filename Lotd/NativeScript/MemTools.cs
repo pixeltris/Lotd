@@ -18,6 +18,8 @@ namespace Lotd
         private Dictionary<string, IntPtr> customBattlePackDataAddresses = new Dictionary<string, IntPtr>();
         private int customBattlePackMaxDataLen = 8192;
 
+        private bool processWatcherRunning = false;
+
         /// <summary>
         /// Determines if transitions should be used for screen state changes
         /// </summary>
@@ -82,9 +84,10 @@ namespace Lotd
 
         public void RunProcessWatcher()
         {
+            processWatcherRunning = true;
             new Thread(delegate()
             {
-                while (true)
+                while (processWatcherRunning)
                 {
                     if (!HasProcessHandle)
                     {
@@ -95,6 +98,11 @@ namespace Lotd
                     Thread.Sleep(2000);
                 }
             }).Start();
+        }
+
+        public void StopProcessWatcher()
+        {
+            processWatcherRunning = false;
         }
 
         public bool Load()

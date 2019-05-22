@@ -60,10 +60,16 @@ namespace Lotd.UI
 
         private void MemTools_Loaded(object sender, EventArgs e)
         {
-            Invoke((MethodInvoker) delegate
+            try
             {
-                ReloadDecks();
-            });
+                Invoke((MethodInvoker)delegate
+               {
+                   ReloadDecks();
+               });
+            }
+            catch
+            {
+            }
         }
 
         private void FilterDeckCheckBox_CheckStateChanged(object sender, EventArgs e)
@@ -237,12 +243,12 @@ namespace Lotd.UI
                 string path = Path.Combine(deckFilesDir, filename);
                 try
                 {
-                    if (MessageBox.Show("Would you like to export this as YDK (instead of YDL)?", "Export",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    DialogResult result = MessageBox.Show("Would you like to export this as YDK (instead of YDL)?", "Export", MessageBoxButtons.YesNoCancel);
+                    if (result == DialogResult.Yes)
                     {
                         YdkHelper.SaveDeck(deck, Path.ChangeExtension(path, YdkHelper.FileExtension));
                     }
-                    else
+                    else if (result == DialogResult.No)
                     {
                         File.WriteAllBytes(path, MemTools.StructToByteArray(deck));
                     }
