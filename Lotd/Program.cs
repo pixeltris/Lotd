@@ -27,6 +27,9 @@ namespace Lotd
             Manager = new Manager();
             Manager.Load();
 
+            YdkHelper.LoadIdMap();
+            //YdkHelper.GenerateIdMap();
+
             MemTools = new MemTools();
             MemTools.UseScreenStateTransitions = true;
             MemTools.CustomYdcBattlePacksEnabled = true;

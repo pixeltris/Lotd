@@ -188,6 +188,20 @@ namespace Lotd.UI
                     {
                     }
                 }
+                foreach (string file in Directory.GetFiles(deckFilesDir, "*" + YdkHelper.FileExtension))
+                {
+                    try
+                    {
+                        MemTools.YdcDeck deck = YdkHelper.LoadDeck(file);
+                        if (deck.IsValid)
+                        {
+                            fileDecks.Add(deck);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
             }
 
             UpdateDecksList();
@@ -223,7 +237,15 @@ namespace Lotd.UI
                 string path = Path.Combine(deckFilesDir, filename);
                 try
                 {
-                    File.WriteAllBytes(path, MemTools.StructToByteArray(deck));
+                    if (MessageBox.Show("Would you like to export this as YDK (instead of YDL)?", "Export",
+                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        YdkHelper.SaveDeck(deck, Path.ChangeExtension(path, YdkHelper.FileExtension));
+                    }
+                    else
+                    {
+                        File.WriteAllBytes(path, MemTools.StructToByteArray(deck));
+                    }
                 }
                 catch
                 {

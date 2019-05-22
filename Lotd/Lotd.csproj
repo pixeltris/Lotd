@@ -126,6 +126,7 @@
     <Compile Include="UI\SimpleSaveDataForm.Designer.cs">
       <DependentUpon>SimpleSaveDataForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="YdkHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\AnimationsForm.resx">
@@ -143,6 +144,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AnimationNames.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="YdkIds.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
