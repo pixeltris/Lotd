@@ -68,6 +68,11 @@ namespace Lotd.UI
                 campaignArcV0PercentRadioButton.Checked,
                 campaignArcV100PercentRadioButton.Checked);
 
+            SetCampaignState(saveData, DuelSeries.YuGiOhVRAINS,
+                campaignVrainsAvailable0PercentRadioButton.Checked,
+                campaignVrains0PercentRadioButton.Checked,
+                campaignVrains100PercentRadioButton.Checked);
+
             if (shopPacks0PercentRadioButton.Checked)
             {
                 saveData.Misc.UnlockedShopPacks = UnlockedShopPacks.None;

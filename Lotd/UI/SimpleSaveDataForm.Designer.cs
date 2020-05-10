@@ -88,6 +88,11 @@
             this.challenges0PercentRadioButton = new System.Windows.Forms.RadioButton();
             this.challengesAvailable0PercentRadioButton = new System.Windows.Forms.RadioButton();
             this.challengesUnchangedRadioButton = new System.Windows.Forms.RadioButton();
+            this.campaignVrainsGroupBox = new System.Windows.Forms.GroupBox();
+            this.campaignVrains100PercentRadioButton = new System.Windows.Forms.RadioButton();
+            this.campaignVrains0PercentRadioButton = new System.Windows.Forms.RadioButton();
+            this.campaignVrainsAvailable0PercentRadioButton = new System.Windows.Forms.RadioButton();
+            this.campaignVrainsUnchangedRadioButton = new System.Windows.Forms.RadioButton();
             this.campaignYuGiOhGroupBox.SuspendLayout();
             this.campaignGXGroupBox.SuspendLayout();
             this.campaign5DsGroupBox.SuspendLayout();
@@ -101,6 +106,7 @@
             this.deckRecipesGroupBox.SuspendLayout();
             this.avatarsGroupBox.SuspendLayout();
             this.challengesGroupBox.SuspendLayout();
+            this.campaignVrainsGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // campaignYuGiOhGroupBox
@@ -125,7 +131,7 @@
             this.campaignYuGiOh100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
             this.campaignYuGiOh100PercentRadioButton.Name = "campaignYuGiOh100PercentRadioButton";
             this.campaignYuGiOh100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.campaignYuGiOh100PercentRadioButton.TabIndex = 2;
+            this.campaignYuGiOh100PercentRadioButton.TabIndex = 3;
             this.campaignYuGiOh100PercentRadioButton.Text = "100%";
             this.campaignYuGiOh100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -136,7 +142,7 @@
             this.campaignYuGiOh0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
             this.campaignYuGiOh0PercentRadioButton.Name = "campaignYuGiOh0PercentRadioButton";
             this.campaignYuGiOh0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.campaignYuGiOh0PercentRadioButton.TabIndex = 1;
+            this.campaignYuGiOh0PercentRadioButton.TabIndex = 2;
             this.campaignYuGiOh0PercentRadioButton.Text = "0%";
             this.campaignYuGiOh0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -147,7 +153,7 @@
             this.campaignYuGiOhAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.campaignYuGiOhAvailable0PercentRadioButton.Name = "campaignYuGiOhAvailable0PercentRadioButton";
             this.campaignYuGiOhAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
-            this.campaignYuGiOhAvailable0PercentRadioButton.TabIndex = 3;
+            this.campaignYuGiOhAvailable0PercentRadioButton.TabIndex = 1;
             this.campaignYuGiOhAvailable0PercentRadioButton.Text = "0% (Available)";
             this.campaignYuGiOhAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -186,7 +192,7 @@
             this.campaignGX100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
             this.campaignGX100PercentRadioButton.Name = "campaignGX100PercentRadioButton";
             this.campaignGX100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.campaignGX100PercentRadioButton.TabIndex = 2;
+            this.campaignGX100PercentRadioButton.TabIndex = 7;
             this.campaignGX100PercentRadioButton.Text = "100%";
             this.campaignGX100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -197,7 +203,7 @@
             this.campaignGX0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
             this.campaignGX0PercentRadioButton.Name = "campaignGX0PercentRadioButton";
             this.campaignGX0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.campaignGX0PercentRadioButton.TabIndex = 1;
+            this.campaignGX0PercentRadioButton.TabIndex = 6;
             this.campaignGX0PercentRadioButton.Text = "0%";
             this.campaignGX0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -208,7 +214,7 @@
             this.campaignGXAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.campaignGXAvailable0PercentRadioButton.Name = "campaignGXAvailable0PercentRadioButton";
             this.campaignGXAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
-            this.campaignGXAvailable0PercentRadioButton.TabIndex = 4;
+            this.campaignGXAvailable0PercentRadioButton.TabIndex = 5;
             this.campaignGXAvailable0PercentRadioButton.Text = "0% (Available)";
             this.campaignGXAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -220,7 +226,7 @@
             this.campaignGXUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.campaignGXUnchangedRadioButton.Name = "campaignGXUnchangedRadioButton";
             this.campaignGXUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.campaignGXUnchangedRadioButton.TabIndex = 0;
+            this.campaignGXUnchangedRadioButton.TabIndex = 4;
             this.campaignGXUnchangedRadioButton.TabStop = true;
             this.campaignGXUnchangedRadioButton.Text = "Unchanged";
             this.campaignGXUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -247,7 +253,7 @@
             this.campaign5Ds100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
             this.campaign5Ds100PercentRadioButton.Name = "campaign5Ds100PercentRadioButton";
             this.campaign5Ds100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.campaign5Ds100PercentRadioButton.TabIndex = 2;
+            this.campaign5Ds100PercentRadioButton.TabIndex = 11;
             this.campaign5Ds100PercentRadioButton.Text = "100%";
             this.campaign5Ds100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -258,7 +264,7 @@
             this.campaign5Ds0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
             this.campaign5Ds0PercentRadioButton.Name = "campaign5Ds0PercentRadioButton";
             this.campaign5Ds0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.campaign5Ds0PercentRadioButton.TabIndex = 1;
+            this.campaign5Ds0PercentRadioButton.TabIndex = 10;
             this.campaign5Ds0PercentRadioButton.Text = "0%";
             this.campaign5Ds0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -269,7 +275,7 @@
             this.campaign5DsAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.campaign5DsAvailable0PercentRadioButton.Name = "campaign5DsAvailable0PercentRadioButton";
             this.campaign5DsAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
-            this.campaign5DsAvailable0PercentRadioButton.TabIndex = 5;
+            this.campaign5DsAvailable0PercentRadioButton.TabIndex = 9;
             this.campaign5DsAvailable0PercentRadioButton.Text = "0% (Available)";
             this.campaign5DsAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -281,7 +287,7 @@
             this.campaign5DsUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.campaign5DsUnchangedRadioButton.Name = "campaign5DsUnchangedRadioButton";
             this.campaign5DsUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.campaign5DsUnchangedRadioButton.TabIndex = 0;
+            this.campaign5DsUnchangedRadioButton.TabIndex = 8;
             this.campaign5DsUnchangedRadioButton.TabStop = true;
             this.campaign5DsUnchangedRadioButton.Text = "Unchanged";
             this.campaign5DsUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -308,7 +314,7 @@
             this.campaignZexal100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
             this.campaignZexal100PercentRadioButton.Name = "campaignZexal100PercentRadioButton";
             this.campaignZexal100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.campaignZexal100PercentRadioButton.TabIndex = 2;
+            this.campaignZexal100PercentRadioButton.TabIndex = 15;
             this.campaignZexal100PercentRadioButton.Text = "100%";
             this.campaignZexal100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -319,7 +325,7 @@
             this.campaignZexal0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
             this.campaignZexal0PercentRadioButton.Name = "campaignZexal0PercentRadioButton";
             this.campaignZexal0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.campaignZexal0PercentRadioButton.TabIndex = 1;
+            this.campaignZexal0PercentRadioButton.TabIndex = 14;
             this.campaignZexal0PercentRadioButton.Text = "0%";
             this.campaignZexal0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -330,7 +336,7 @@
             this.campaignZexalAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.campaignZexalAvailable0PercentRadioButton.Name = "campaignZexalAvailable0PercentRadioButton";
             this.campaignZexalAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
-            this.campaignZexalAvailable0PercentRadioButton.TabIndex = 6;
+            this.campaignZexalAvailable0PercentRadioButton.TabIndex = 13;
             this.campaignZexalAvailable0PercentRadioButton.Text = "0% (Available)";
             this.campaignZexalAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -342,7 +348,7 @@
             this.campaignZexalUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.campaignZexalUnchangedRadioButton.Name = "campaignZexalUnchangedRadioButton";
             this.campaignZexalUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.campaignZexalUnchangedRadioButton.TabIndex = 0;
+            this.campaignZexalUnchangedRadioButton.TabIndex = 12;
             this.campaignZexalUnchangedRadioButton.TabStop = true;
             this.campaignZexalUnchangedRadioButton.Text = "Unchanged";
             this.campaignZexalUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -369,7 +375,7 @@
             this.campaignArcV100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
             this.campaignArcV100PercentRadioButton.Name = "campaignArcV100PercentRadioButton";
             this.campaignArcV100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.campaignArcV100PercentRadioButton.TabIndex = 2;
+            this.campaignArcV100PercentRadioButton.TabIndex = 19;
             this.campaignArcV100PercentRadioButton.Text = "100%";
             this.campaignArcV100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -380,7 +386,7 @@
             this.campaignArcV0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
             this.campaignArcV0PercentRadioButton.Name = "campaignArcV0PercentRadioButton";
             this.campaignArcV0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.campaignArcV0PercentRadioButton.TabIndex = 1;
+            this.campaignArcV0PercentRadioButton.TabIndex = 18;
             this.campaignArcV0PercentRadioButton.Text = "0%";
             this.campaignArcV0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -391,7 +397,7 @@
             this.campaignArcVAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.campaignArcVAvailable0PercentRadioButton.Name = "campaignArcVAvailable0PercentRadioButton";
             this.campaignArcVAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
-            this.campaignArcVAvailable0PercentRadioButton.TabIndex = 3;
+            this.campaignArcVAvailable0PercentRadioButton.TabIndex = 17;
             this.campaignArcVAvailable0PercentRadioButton.Text = "0% (Available)";
             this.campaignArcVAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -403,7 +409,7 @@
             this.campaignArcVUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.campaignArcVUnchangedRadioButton.Name = "campaignArcVUnchangedRadioButton";
             this.campaignArcVUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.campaignArcVUnchangedRadioButton.TabIndex = 0;
+            this.campaignArcVUnchangedRadioButton.TabIndex = 16;
             this.campaignArcVUnchangedRadioButton.TabStop = true;
             this.campaignArcVUnchangedRadioButton.Text = "Unchanged";
             this.campaignArcVUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -416,7 +422,7 @@
             this.cardsGroupBox.Controls.Add(this.cardsAll0xRadioButton);
             this.cardsGroupBox.Controls.Add(this.cardsUnchangedRadioButton);
             this.cardsGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cardsGroupBox.Location = new System.Drawing.Point(0, 400);
+            this.cardsGroupBox.Location = new System.Drawing.Point(0, 440);
             this.cardsGroupBox.Name = "cardsGroupBox";
             this.cardsGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.cardsGroupBox.Size = new System.Drawing.Size(363, 40);
@@ -431,7 +437,7 @@
             this.cardsAll3xRadioButton.Location = new System.Drawing.Point(241, 16);
             this.cardsAll3xRadioButton.Name = "cardsAll3xRadioButton";
             this.cardsAll3xRadioButton.Size = new System.Drawing.Size(50, 21);
-            this.cardsAll3xRadioButton.TabIndex = 4;
+            this.cardsAll3xRadioButton.TabIndex = 44;
             this.cardsAll3xRadioButton.Text = "All 3x";
             this.cardsAll3xRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -442,7 +448,7 @@
             this.cardsAll2xRadioButton.Location = new System.Drawing.Point(191, 16);
             this.cardsAll2xRadioButton.Name = "cardsAll2xRadioButton";
             this.cardsAll2xRadioButton.Size = new System.Drawing.Size(50, 21);
-            this.cardsAll2xRadioButton.TabIndex = 3;
+            this.cardsAll2xRadioButton.TabIndex = 43;
             this.cardsAll2xRadioButton.Text = "All 2x";
             this.cardsAll2xRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -453,7 +459,7 @@
             this.cardsAll1xRadioButton.Location = new System.Drawing.Point(141, 16);
             this.cardsAll1xRadioButton.Name = "cardsAll1xRadioButton";
             this.cardsAll1xRadioButton.Size = new System.Drawing.Size(50, 21);
-            this.cardsAll1xRadioButton.TabIndex = 2;
+            this.cardsAll1xRadioButton.TabIndex = 42;
             this.cardsAll1xRadioButton.Text = "All 1x";
             this.cardsAll1xRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -464,7 +470,7 @@
             this.cardsAll0xRadioButton.Location = new System.Drawing.Point(91, 16);
             this.cardsAll0xRadioButton.Name = "cardsAll0xRadioButton";
             this.cardsAll0xRadioButton.Size = new System.Drawing.Size(50, 21);
-            this.cardsAll0xRadioButton.TabIndex = 1;
+            this.cardsAll0xRadioButton.TabIndex = 41;
             this.cardsAll0xRadioButton.Text = "All 0x";
             this.cardsAll0xRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -476,7 +482,7 @@
             this.cardsUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.cardsUnchangedRadioButton.Name = "cardsUnchangedRadioButton";
             this.cardsUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.cardsUnchangedRadioButton.TabIndex = 0;
+            this.cardsUnchangedRadioButton.TabIndex = 40;
             this.cardsUnchangedRadioButton.TabStop = true;
             this.cardsUnchangedRadioButton.Text = "Unchanged";
             this.cardsUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -487,7 +493,7 @@
             this.shopPacksGroupBox.Controls.Add(this.shopPacks0PercentRadioButton);
             this.shopPacksGroupBox.Controls.Add(this.shopPacksUnchangedRadioButton);
             this.shopPacksGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.shopPacksGroupBox.Location = new System.Drawing.Point(0, 240);
+            this.shopPacksGroupBox.Location = new System.Drawing.Point(0, 280);
             this.shopPacksGroupBox.Name = "shopPacksGroupBox";
             this.shopPacksGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.shopPacksGroupBox.Size = new System.Drawing.Size(363, 40);
@@ -502,7 +508,7 @@
             this.shopPacks100PercentRadioButton.Location = new System.Drawing.Point(130, 16);
             this.shopPacks100PercentRadioButton.Name = "shopPacks100PercentRadioButton";
             this.shopPacks100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.shopPacks100PercentRadioButton.TabIndex = 2;
+            this.shopPacks100PercentRadioButton.TabIndex = 30;
             this.shopPacks100PercentRadioButton.Text = "100%";
             this.shopPacks100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -513,7 +519,7 @@
             this.shopPacks0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.shopPacks0PercentRadioButton.Name = "shopPacks0PercentRadioButton";
             this.shopPacks0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.shopPacks0PercentRadioButton.TabIndex = 1;
+            this.shopPacks0PercentRadioButton.TabIndex = 29;
             this.shopPacks0PercentRadioButton.Text = "0%";
             this.shopPacks0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -525,7 +531,7 @@
             this.shopPacksUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.shopPacksUnchangedRadioButton.Name = "shopPacksUnchangedRadioButton";
             this.shopPacksUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.shopPacksUnchangedRadioButton.TabIndex = 0;
+            this.shopPacksUnchangedRadioButton.TabIndex = 28;
             this.shopPacksUnchangedRadioButton.TabStop = true;
             this.shopPacksUnchangedRadioButton.Text = "Unchanged";
             this.shopPacksUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -536,7 +542,7 @@
             this.battlePacksGroupBox.Controls.Add(this.battlePacks0PercentRadioButton);
             this.battlePacksGroupBox.Controls.Add(this.battlePacksUnchangedRadioButton);
             this.battlePacksGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.battlePacksGroupBox.Location = new System.Drawing.Point(0, 280);
+            this.battlePacksGroupBox.Location = new System.Drawing.Point(0, 320);
             this.battlePacksGroupBox.Name = "battlePacksGroupBox";
             this.battlePacksGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.battlePacksGroupBox.Size = new System.Drawing.Size(363, 40);
@@ -551,7 +557,7 @@
             this.battlePacks100PercentRadioButton.Location = new System.Drawing.Point(130, 16);
             this.battlePacks100PercentRadioButton.Name = "battlePacks100PercentRadioButton";
             this.battlePacks100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.battlePacks100PercentRadioButton.TabIndex = 2;
+            this.battlePacks100PercentRadioButton.TabIndex = 33;
             this.battlePacks100PercentRadioButton.Text = "100%";
             this.battlePacks100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -562,7 +568,7 @@
             this.battlePacks0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.battlePacks0PercentRadioButton.Name = "battlePacks0PercentRadioButton";
             this.battlePacks0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.battlePacks0PercentRadioButton.TabIndex = 1;
+            this.battlePacks0PercentRadioButton.TabIndex = 32;
             this.battlePacks0PercentRadioButton.Text = "0%";
             this.battlePacks0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -574,7 +580,7 @@
             this.battlePacksUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.battlePacksUnchangedRadioButton.Name = "battlePacksUnchangedRadioButton";
             this.battlePacksUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.battlePacksUnchangedRadioButton.TabIndex = 0;
+            this.battlePacksUnchangedRadioButton.TabIndex = 31;
             this.battlePacksUnchangedRadioButton.TabStop = true;
             this.battlePacksUnchangedRadioButton.Text = "Unchanged";
             this.battlePacksUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -587,7 +593,7 @@
             this.miscGroupBox.Controls.Add(this.duelPointsTextBox);
             this.miscGroupBox.Controls.Add(this.duelPointsLabel);
             this.miscGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.miscGroupBox.Location = new System.Drawing.Point(0, 440);
+            this.miscGroupBox.Location = new System.Drawing.Point(0, 480);
             this.miscGroupBox.Name = "miscGroupBox";
             this.miscGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.miscGroupBox.Size = new System.Drawing.Size(363, 85);
@@ -601,7 +607,7 @@
             this.unlockButtonsCheckBox.Location = new System.Drawing.Point(10, 64);
             this.unlockButtonsCheckBox.Name = "unlockButtonsCheckBox";
             this.unlockButtonsCheckBox.Size = new System.Drawing.Size(292, 17);
-            this.unlockButtonsCheckBox.TabIndex = 4;
+            this.unlockButtonsCheckBox.TabIndex = 47;
             this.unlockButtonsCheckBox.Text = "Unlock Buttons (use if some buttons in game are locked)";
             this.unlockButtonsCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -611,7 +617,7 @@
             this.removeDefaultCardsCheckBox.Location = new System.Drawing.Point(10, 41);
             this.removeDefaultCardsCheckBox.Name = "removeDefaultCardsCheckBox";
             this.removeDefaultCardsCheckBox.Size = new System.Drawing.Size(350, 17);
-            this.removeDefaultCardsCheckBox.TabIndex = 3;
+            this.removeDefaultCardsCheckBox.TabIndex = 46;
             this.removeDefaultCardsCheckBox.Text = "Remove default cards (one time usage per session) (no DLC support)";
             this.removeDefaultCardsCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -629,7 +635,7 @@
             this.duelPointsTextBox.Location = new System.Drawing.Point(73, 16);
             this.duelPointsTextBox.Name = "duelPointsTextBox";
             this.duelPointsTextBox.Size = new System.Drawing.Size(100, 20);
-            this.duelPointsTextBox.TabIndex = 1;
+            this.duelPointsTextBox.TabIndex = 45;
             this.duelPointsTextBox.Tag = "";
             // 
             // duelPointsLabel
@@ -646,7 +652,7 @@
             this.applyButton.Location = new System.Drawing.Point(138, 2);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(75, 23);
-            this.applyButton.TabIndex = 9;
+            this.applyButton.TabIndex = 48;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
@@ -655,9 +661,9 @@
             // 
             this.applyPanel.Controls.Add(this.applyButton);
             this.applyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.applyPanel.Location = new System.Drawing.Point(0, 525);
+            this.applyPanel.Location = new System.Drawing.Point(0, 565);
             this.applyPanel.Name = "applyPanel";
-            this.applyPanel.Size = new System.Drawing.Size(363, 26);
+            this.applyPanel.Size = new System.Drawing.Size(363, 29);
             this.applyPanel.TabIndex = 10;
             // 
             // deckRecipesGroupBox
@@ -666,7 +672,7 @@
             this.deckRecipesGroupBox.Controls.Add(this.deckRecipes0PercentRadioButton);
             this.deckRecipesGroupBox.Controls.Add(this.deckRecipesUnchangedRadioButton);
             this.deckRecipesGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.deckRecipesGroupBox.Location = new System.Drawing.Point(0, 320);
+            this.deckRecipesGroupBox.Location = new System.Drawing.Point(0, 360);
             this.deckRecipesGroupBox.Name = "deckRecipesGroupBox";
             this.deckRecipesGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.deckRecipesGroupBox.Size = new System.Drawing.Size(363, 40);
@@ -681,7 +687,7 @@
             this.deckRecipes100PercentRadioButton.Location = new System.Drawing.Point(130, 16);
             this.deckRecipes100PercentRadioButton.Name = "deckRecipes100PercentRadioButton";
             this.deckRecipes100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.deckRecipes100PercentRadioButton.TabIndex = 2;
+            this.deckRecipes100PercentRadioButton.TabIndex = 36;
             this.deckRecipes100PercentRadioButton.Text = "100%";
             this.deckRecipes100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -692,7 +698,7 @@
             this.deckRecipes0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.deckRecipes0PercentRadioButton.Name = "deckRecipes0PercentRadioButton";
             this.deckRecipes0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.deckRecipes0PercentRadioButton.TabIndex = 1;
+            this.deckRecipes0PercentRadioButton.TabIndex = 35;
             this.deckRecipes0PercentRadioButton.Text = "0%";
             this.deckRecipes0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -704,7 +710,7 @@
             this.deckRecipesUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.deckRecipesUnchangedRadioButton.Name = "deckRecipesUnchangedRadioButton";
             this.deckRecipesUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.deckRecipesUnchangedRadioButton.TabIndex = 0;
+            this.deckRecipesUnchangedRadioButton.TabIndex = 34;
             this.deckRecipesUnchangedRadioButton.TabStop = true;
             this.deckRecipesUnchangedRadioButton.Text = "Unchanged";
             this.deckRecipesUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -715,7 +721,7 @@
             this.avatarsGroupBox.Controls.Add(this.avatars0PercentRadioButton);
             this.avatarsGroupBox.Controls.Add(this.avatarsUnchangedRadioButton);
             this.avatarsGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.avatarsGroupBox.Location = new System.Drawing.Point(0, 360);
+            this.avatarsGroupBox.Location = new System.Drawing.Point(0, 400);
             this.avatarsGroupBox.Name = "avatarsGroupBox";
             this.avatarsGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.avatarsGroupBox.Size = new System.Drawing.Size(363, 40);
@@ -730,7 +736,7 @@
             this.avatars100PercentRadioButton.Location = new System.Drawing.Point(130, 16);
             this.avatars100PercentRadioButton.Name = "avatars100PercentRadioButton";
             this.avatars100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.avatars100PercentRadioButton.TabIndex = 2;
+            this.avatars100PercentRadioButton.TabIndex = 39;
             this.avatars100PercentRadioButton.Text = "100%";
             this.avatars100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -741,7 +747,7 @@
             this.avatars0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.avatars0PercentRadioButton.Name = "avatars0PercentRadioButton";
             this.avatars0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.avatars0PercentRadioButton.TabIndex = 1;
+            this.avatars0PercentRadioButton.TabIndex = 38;
             this.avatars0PercentRadioButton.Text = "0%";
             this.avatars0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -753,7 +759,7 @@
             this.avatarsUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.avatarsUnchangedRadioButton.Name = "avatarsUnchangedRadioButton";
             this.avatarsUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.avatarsUnchangedRadioButton.TabIndex = 0;
+            this.avatarsUnchangedRadioButton.TabIndex = 37;
             this.avatarsUnchangedRadioButton.TabStop = true;
             this.avatarsUnchangedRadioButton.Text = "Unchanged";
             this.avatarsUnchangedRadioButton.UseVisualStyleBackColor = true;
@@ -765,7 +771,7 @@
             this.challengesGroupBox.Controls.Add(this.challengesAvailable0PercentRadioButton);
             this.challengesGroupBox.Controls.Add(this.challengesUnchangedRadioButton);
             this.challengesGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.challengesGroupBox.Location = new System.Drawing.Point(0, 200);
+            this.challengesGroupBox.Location = new System.Drawing.Point(0, 240);
             this.challengesGroupBox.Name = "challengesGroupBox";
             this.challengesGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.challengesGroupBox.Size = new System.Drawing.Size(363, 40);
@@ -780,7 +786,7 @@
             this.challenges100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
             this.challenges100PercentRadioButton.Name = "challenges100PercentRadioButton";
             this.challenges100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
-            this.challenges100PercentRadioButton.TabIndex = 2;
+            this.challenges100PercentRadioButton.TabIndex = 27;
             this.challenges100PercentRadioButton.Text = "100%";
             this.challenges100PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -791,7 +797,7 @@
             this.challenges0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
             this.challenges0PercentRadioButton.Name = "challenges0PercentRadioButton";
             this.challenges0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
-            this.challenges0PercentRadioButton.TabIndex = 1;
+            this.challenges0PercentRadioButton.TabIndex = 26;
             this.challenges0PercentRadioButton.Text = "0%";
             this.challenges0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -802,7 +808,7 @@
             this.challengesAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
             this.challengesAvailable0PercentRadioButton.Name = "challengesAvailable0PercentRadioButton";
             this.challengesAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
-            this.challengesAvailable0PercentRadioButton.TabIndex = 3;
+            this.challengesAvailable0PercentRadioButton.TabIndex = 25;
             this.challengesAvailable0PercentRadioButton.Text = "0% (Available)";
             this.challengesAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
             // 
@@ -814,16 +820,77 @@
             this.challengesUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
             this.challengesUnchangedRadioButton.Name = "challengesUnchangedRadioButton";
             this.challengesUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
-            this.challengesUnchangedRadioButton.TabIndex = 0;
+            this.challengesUnchangedRadioButton.TabIndex = 24;
             this.challengesUnchangedRadioButton.TabStop = true;
             this.challengesUnchangedRadioButton.Text = "Unchanged";
             this.challengesUnchangedRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // campaignVrainsGroupBox
+            // 
+            this.campaignVrainsGroupBox.Controls.Add(this.campaignVrains100PercentRadioButton);
+            this.campaignVrainsGroupBox.Controls.Add(this.campaignVrains0PercentRadioButton);
+            this.campaignVrainsGroupBox.Controls.Add(this.campaignVrainsAvailable0PercentRadioButton);
+            this.campaignVrainsGroupBox.Controls.Add(this.campaignVrainsUnchangedRadioButton);
+            this.campaignVrainsGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.campaignVrainsGroupBox.Location = new System.Drawing.Point(0, 200);
+            this.campaignVrainsGroupBox.Name = "campaignVrainsGroupBox";
+            this.campaignVrainsGroupBox.Padding = new System.Windows.Forms.Padding(10, 3, 3, 3);
+            this.campaignVrainsGroupBox.Size = new System.Drawing.Size(363, 40);
+            this.campaignVrainsGroupBox.TabIndex = 14;
+            this.campaignVrainsGroupBox.TabStop = false;
+            this.campaignVrainsGroupBox.Text = "Campaign (VRAINS)";
+            // 
+            // campaignVrains100PercentRadioButton
+            // 
+            this.campaignVrains100PercentRadioButton.AutoSize = true;
+            this.campaignVrains100PercentRadioButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.campaignVrains100PercentRadioButton.Location = new System.Drawing.Point(221, 16);
+            this.campaignVrains100PercentRadioButton.Name = "campaignVrains100PercentRadioButton";
+            this.campaignVrains100PercentRadioButton.Size = new System.Drawing.Size(51, 21);
+            this.campaignVrains100PercentRadioButton.TabIndex = 23;
+            this.campaignVrains100PercentRadioButton.Text = "100%";
+            this.campaignVrains100PercentRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // campaignVrains0PercentRadioButton
+            // 
+            this.campaignVrains0PercentRadioButton.AutoSize = true;
+            this.campaignVrains0PercentRadioButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.campaignVrains0PercentRadioButton.Location = new System.Drawing.Point(182, 16);
+            this.campaignVrains0PercentRadioButton.Name = "campaignVrains0PercentRadioButton";
+            this.campaignVrains0PercentRadioButton.Size = new System.Drawing.Size(39, 21);
+            this.campaignVrains0PercentRadioButton.TabIndex = 22;
+            this.campaignVrains0PercentRadioButton.Text = "0%";
+            this.campaignVrains0PercentRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // campaignVrainsAvailable0PercentRadioButton
+            // 
+            this.campaignVrainsAvailable0PercentRadioButton.AutoSize = true;
+            this.campaignVrainsAvailable0PercentRadioButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.campaignVrainsAvailable0PercentRadioButton.Location = new System.Drawing.Point(91, 16);
+            this.campaignVrainsAvailable0PercentRadioButton.Name = "campaignVrainsAvailable0PercentRadioButton";
+            this.campaignVrainsAvailable0PercentRadioButton.Size = new System.Drawing.Size(91, 21);
+            this.campaignVrainsAvailable0PercentRadioButton.TabIndex = 21;
+            this.campaignVrainsAvailable0PercentRadioButton.Text = "0% (Available)";
+            this.campaignVrainsAvailable0PercentRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // campaignVrainsUnchangedRadioButton
+            // 
+            this.campaignVrainsUnchangedRadioButton.AutoSize = true;
+            this.campaignVrainsUnchangedRadioButton.Checked = true;
+            this.campaignVrainsUnchangedRadioButton.Dock = System.Windows.Forms.DockStyle.Left;
+            this.campaignVrainsUnchangedRadioButton.Location = new System.Drawing.Point(10, 16);
+            this.campaignVrainsUnchangedRadioButton.Name = "campaignVrainsUnchangedRadioButton";
+            this.campaignVrainsUnchangedRadioButton.Size = new System.Drawing.Size(81, 21);
+            this.campaignVrainsUnchangedRadioButton.TabIndex = 20;
+            this.campaignVrainsUnchangedRadioButton.TabStop = true;
+            this.campaignVrainsUnchangedRadioButton.Text = "Unchanged";
+            this.campaignVrainsUnchangedRadioButton.UseVisualStyleBackColor = true;
             // 
             // SimpleSaveDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(363, 551);
+            this.ClientSize = new System.Drawing.Size(363, 594);
             this.Controls.Add(this.applyPanel);
             this.Controls.Add(this.miscGroupBox);
             this.Controls.Add(this.cardsGroupBox);
@@ -832,6 +899,7 @@
             this.Controls.Add(this.battlePacksGroupBox);
             this.Controls.Add(this.shopPacksGroupBox);
             this.Controls.Add(this.challengesGroupBox);
+            this.Controls.Add(this.campaignVrainsGroupBox);
             this.Controls.Add(this.campaignArcVGroupBox);
             this.Controls.Add(this.campaignZexalGroupBox);
             this.Controls.Add(this.campaign5DsGroupBox);
@@ -864,6 +932,8 @@
             this.avatarsGroupBox.PerformLayout();
             this.challengesGroupBox.ResumeLayout(false);
             this.challengesGroupBox.PerformLayout();
+            this.campaignVrainsGroupBox.ResumeLayout(false);
+            this.campaignVrainsGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -930,5 +1000,10 @@
         private System.Windows.Forms.RadioButton challenges0PercentRadioButton;
         private System.Windows.Forms.RadioButton challengesAvailable0PercentRadioButton;
         private System.Windows.Forms.RadioButton challengesUnchangedRadioButton;
+        private System.Windows.Forms.GroupBox campaignVrainsGroupBox;
+        private System.Windows.Forms.RadioButton campaignVrains100PercentRadioButton;
+        private System.Windows.Forms.RadioButton campaignVrains0PercentRadioButton;
+        private System.Windows.Forms.RadioButton campaignVrainsAvailable0PercentRadioButton;
+        private System.Windows.Forms.RadioButton campaignVrainsUnchangedRadioButton;
     }
 }
