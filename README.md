@@ -1,4 +1,4 @@
-Helper tool for Yu-Gi-Oh! Legacy of the Duelist. Allows for custom duels to be configured including features not available in the regular game such as tag / speel / rush duels.
+Helper tool for Yu-Gi-Oh! Legacy of the Duelist. Allows for custom duels to be configured including features not available in the regular game such as tag / speed / rush duels.
 The save file can also be modified to 100% the content, reset parts and unlock all cards.
 
 It supports "Yu-Gi-Oh! Legacy of the Duelist" (2016, steam) and "Yu-Gi-Oh! Legacy of the Duelist : Link Evolution" (2020, steam).
