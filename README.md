@@ -1,5 +1,7 @@
-Helper tool for Yu-Gi-Oh! Legacy of the Duelist. Allows for custom duels to be configured including features not available in the regular game such as tag / speel duels.
+Helper tool for Yu-Gi-Oh! Legacy of the Duelist. Allows for custom duels to be configured including features not available in the regular game such as tag / speel / rush duels.
 The save file can also be modified to 100% the content, reset parts and unlock all cards.
+
+It supports "Yu-Gi-Oh! Legacy of the Duelist" (2016, steam) and "Yu-Gi-Oh! Legacy of the Duelist : Link Evolution" (2020, steam).
 
 # Duel Starter
 
@@ -50,4 +52,6 @@ TODO: Create a list of animations which are useful to block.
 # Related Projects
 
 https://github.com/Arefu/Wolf  
-https://github.com/thomasneff/YGOLOTDPatchDraft
+https://github.com/thomasneff/YGOLOTDPatchDraft  
+https://github.com/MoonlitDeath/Link-Evolution-Editing-Guide/wiki  
+[https://github.com/nzxth2](https://github.com/nzxth2?tab=repositories&q=&type=source&language=) (various repos)
