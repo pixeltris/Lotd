@@ -18,8 +18,36 @@ namespace Lotd
     /// </summary>
     public class LotdArchive
     {
-        public const string TocFileName = "YGO_DATA.toc";
-        public const string DatFileName = "YGO_DATA.dat";
+        public string TocFileName
+        {
+            get
+            {
+                switch (Version)
+                {
+                    default:
+                    case GameVersion.Lotd:
+                    case GameVersion.LinkEvolution1:
+                        return "YGO_DATA.toc";
+                    case GameVersion.LinkEvolution2:
+                        return "YGO_2020.toc";
+                }
+            }
+        }
+        public string DatFileName
+        {
+            get
+            {
+                switch (Version)
+                {
+                    default:
+                    case GameVersion.Lotd:
+                    case GameVersion.LinkEvolution1:
+                        return "YGO_DATA.dat";
+                    case GameVersion.LinkEvolution2:
+                        return "YGO_2020.dat";
+                }
+            }
+        }
 
         public string InstallDirectory { get; private set; }
         
@@ -28,13 +56,38 @@ namespace Lotd
 
         public bool WriteAccess { get; set; }
 
+        public GameVersion Version { get; private set; }
+
         public LotdArchive()
         {
-            InstallDirectory = GetInstallDirectory();
+            // Order by release date (newest first)
+            GameVersion[] versions = { GameVersion.LinkEvolution2, GameVersion.Lotd };
+
+            foreach (GameVersion version in versions)
+            {
+                string dir = GetInstallDirectory(version);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    Version = version;
+                    InstallDirectory = dir;
+                }
+            }
+
+            if (string.IsNullOrEmpty(InstallDirectory))
+            {
+                throw new Exception("Failed to find LOTD data files");
+            }
         }
 
-        public LotdArchive(string installDirectory)
+        public LotdArchive(GameVersion version)
         {
+            Version = version;
+            InstallDirectory = GetInstallDirectory(version);
+        }
+
+        public LotdArchive(GameVersion version, string installDirectory)
+        {
+            Version = version;
             InstallDirectory = installDirectory;
         }
 
@@ -148,7 +201,7 @@ namespace Lotd
             }
             catch (Exception e)
             {
-                throw new Exception("Error when opening .dat file: " + e);
+                    throw new Exception("Error when opening .dat file: " + e);
             }
 
             // Validate all file paths
@@ -378,15 +431,35 @@ namespace Lotd
             }
         }
 
-        public static string GetInstallDirectory()
+        public static string GetInstallDirectory(GameVersion version)
         {
             string installDir = null;
+
+            int appId = 0;
+            string gameName = "";
+            switch (version)
+            {
+                case GameVersion.Lotd:
+                    appId = 480650;
+                    gameName = "Yu-Gi-Oh! Legacy of the Duelist";
+                    break;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    appId = 1150640;
+                    gameName = "Yu-Gi-Oh! Legacy of the Duelist Link Evolution";
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(gameName))
+            {
+                return null;
+            }
 
             try
             {
                 using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
                 {
-                    using (var key = root.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 480650"))
+                    using (var key = root.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App " + appId))
                     {
                         if (key != null)
                         {
@@ -410,7 +483,7 @@ namespace Lotd
                             if (key != null)
                             {
                                 string steamDir = key.GetValue("InstallPath").ToString();
-                                installDir = Path.Combine(steamDir, "steamapps", "common", "Yu-Gi-Oh! Legacy of the Duelist");
+                                installDir = Path.Combine(steamDir, "steamapps", "common", gameName);
                             }
                         }
                     }

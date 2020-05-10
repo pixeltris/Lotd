@@ -130,7 +130,7 @@ namespace Lotd
 
         public void FixGameSaveSignatureOnDisk()
         {
-            FixGameSaveSignatureOnDisk(GetSaveFilePath());
+            FixGameSaveSignatureOnDisk(GetSaveFilePath(Version));
         }
 
         public void FixGameSaveSignatureOnDisk(string path)
@@ -216,9 +216,9 @@ namespace Lotd
             }
         }
 
-        public static string GetSaveFilePath()
+        public static string GetSaveFilePath(GameVersion version)
         {
-            string installDir = LotdArchive.GetInstallDirectory();
+            string installDir = LotdArchive.GetInstallDirectory(version);
             if (!string.IsNullOrEmpty(installDir))
             {
                 try

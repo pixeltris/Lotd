@@ -10,42 +10,142 @@ namespace Lotd
     public partial class GameSaveData
     {
         const uint headerMagic1 = 0x54CE29F9;// 1422797305
-        const uint headerMagic2 = 0x04714D02;// 74534146
-        public const int FileLength = 29005;
+        uint headerMagic2
+        {
+            get
+            {
+                switch(Version)
+                {
+                    case GameVersion.Lotd:
+                        return 0x04714D02;// 74534146
+                    case GameVersion.LinkEvolution1:
+                    case GameVersion.LinkEvolution2:
+                        return 0X04ABE802;// 78374914
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
+        public int FileLength { get { return GetFileLength(Version); } }
 
         // Offsets - these are safe to be hard coded as the layout of the file is always the same
         // First 20 bytes = magic + signature + play count
-        public const int UnkOffset1 = 20;// int + int + int + int - default values are (5 / 5 / 0 / 0x3F800000)
-        public const int StatsOffset = 36;
-        public const int BattlePacksOffset = 380;
-        public const int MiscDataOffset = 3600;
-        public const int CampaignDataOffset = 5648;
-        public const int DecksOffset = 11696;
-        public const int CardListOffset = 21424;
+        const int UnkOffset1 = 20;// int + int + int + int - default values are (5 / 5 / 0 / 0x3F800000)
+        const int StatsOffset = 36;
+        int BattlePacksOffset { get { return GetBattlePacksOffset(Version); }  }
+        int MiscDataOffset { get { return GetMiscDataOffset(Version); } }
+        int CampaignDataOffset { get { return GetCampaignDataOffset(Version); } }
+        int DecksOffset { get { return GetDecksOffset(Version); } }
+        int CardListOffset { get { return GetCardListOffset(Version); } }
 
-        public static int StatsSize
+        public int StatsSize { get { return GetStatsSize(Version); } }
+        public int BattlePacksSize { get { return GetBattlePacksSize(Version); } }
+        public int MiscDataSize { get { return GetMiscDataSize(Version); } }
+        public int CampaignDataSize { get { return GetCampaignDataSize(Version); } }
+        public int DecksSize { get { return GetDecksSize(Version); } }
+        public int CardListSize { get { return GetCardListSize(Version); } }
+
+        public static int GetFileLength(GameVersion version)
         {
-            get { return BattlePacksOffset - StatsOffset; }
+            switch (version)
+            {
+                case GameVersion.Lotd:
+                    return 29005;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 44008;
+                default:
+                    throw new NotImplementedException();
+            }
         }
-        public static int BattlePacksSize
+
+        public static int GetStatsOffset(GameVersion version)
         {
-            get { return MiscDataOffset - BattlePacksOffset; }
+            return StatsOffset;
         }
-        public static int MiscDataSize
+        public static int GetBattlePacksOffset(GameVersion version)
         {
-            get { return CampaignDataOffset - MiscDataOffset; }
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 380;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 836;
+            }
         }
-        public static int CampaignDataSize
+        public static int GetMiscDataOffset(GameVersion version)
         {
-            get { return DecksOffset - CampaignDataOffset; }
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 3600;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 4056;
+            }
         }
-        public static int DecksSize
+        public static int GetCampaignDataOffset(GameVersion version)
         {
-            get { return CardListOffset - DecksOffset; }
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 5648;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 7024;
+            }
         }
-        public static int CardListSize
+        public static int GetDecksOffset(GameVersion version)
         {
-            get { return FileLength - CardListOffset; }
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 11696;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 14280;
+            }
+        }
+        public static int GetCardListOffset(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 21424;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 24008;
+            }
+        }
+        public static int GetStatsSize(GameVersion version)
+        {
+            return GetBattlePacksOffset(version) - GetStatsOffset(version);
+        }
+        public static int GetBattlePacksSize(GameVersion version)
+        {
+            return GetMiscDataOffset(version) - GetBattlePacksOffset(version);
+        }
+        public static int GetMiscDataSize(GameVersion version)
+        {
+            return GetCampaignDataOffset(version) - GetMiscDataOffset(version);
+        }
+        public static int GetCampaignDataSize(GameVersion version)
+        {
+            return GetDecksOffset(version) - GetCampaignDataOffset(version);
+        }
+        public static int GetDecksSize(GameVersion version)
+        {
+            return GetCardListOffset(version) - GetDecksOffset(version);
+        }
+        public static int GetCardListSize(GameVersion version)
+        {
+            return GetFileLength(version) - GetCardListOffset(version);
         }
 
         /// <summary>
@@ -61,8 +161,11 @@ namespace Lotd
         public DeckSaveData[] Decks { get; private set; }
         public CardListSaveData CardList { get; private set; }
 
-        public GameSaveData()
+        public GameVersion Version { get; set; }
+
+        public GameSaveData(GameVersion version)
         {
+            Version = version;
             Clear();
         }
 
@@ -70,7 +173,7 @@ namespace Lotd
         {
             if (Stats == null)
             {
-                Stats = new StatSaveData();
+                Stats = new StatSaveData(this);
             }
             Stats.Clear();
 
@@ -78,24 +181,24 @@ namespace Lotd
             {
                 BattlePacks = new BattlePackSaveData[Constants.NumBattlePacks];
             }
-            for (int i = 0; i < Constants.NumBattlePacks; i++)
+            for (int i = 0; i < BattlePacks.Length; i++)
             {
                 if (BattlePacks[i] == null)
                 {
-                    BattlePacks[i] = new BattlePackSaveData();
+                    BattlePacks[i] = new BattlePackSaveData(this);
                 }
                 BattlePacks[i].Clear();
             }
 
             if (Misc == null)
             {
-                Misc = new MiscSaveData();
+                Misc = new MiscSaveData(this);
             }
             Misc.Clear();
 
             if (Campaign == null)
             {
-                Campaign = new CampaignSaveData();
+                Campaign = new CampaignSaveData(this);
             }
             Campaign.Clear();
 
@@ -107,21 +210,21 @@ namespace Lotd
             {
                 if (Decks[i] == null)
                 {
-                    Decks[i] = new DeckSaveData();
+                    Decks[i] = new DeckSaveData(this);
                 }
                 Decks[i].Clear();
             }
 
             if (CardList == null)
             {
-                CardList = new CardListSaveData();
+                CardList = new CardListSaveData(this);
             }
             CardList.Clear();
         }
 
         public bool Load()
         {
-            return Load(GetSaveFilePath());
+            return Load(GetSaveFilePath(Version));
         }
 
         public bool Load(string path)
@@ -209,7 +312,7 @@ namespace Lotd
 
         public void Save()
         {
-            Save(GetSaveFilePath());
+            Save(GetSaveFilePath(Version));
         }
 
         public void Save(string path)
@@ -219,6 +322,16 @@ namespace Lotd
             {
                 File.WriteAllBytes(path, buffer);
             }
+        }
+
+        public void MigrateFrom(GameSaveData other)
+        {
+            LotdArchive archive = new LotdArchive(Version);
+            archive.Load();
+            LotdArchive otherArchive = new LotdArchive(other.Version);
+            otherArchive.Load();
+
+            CardList.MigrateFrom(archive, otherArchive, other);
         }
 
         public byte[] ToArray()
@@ -240,28 +353,28 @@ namespace Lotd
                 writer.Write((uint)0x3F800000);
 
                 Debug.Assert(writer.BaseStream.Position == StatsOffset);
-                (Stats != null ? Stats : new StatSaveData()).Save(writer);
+                (Stats != null ? Stats : new StatSaveData(this)).Save(writer);
 
                 Debug.Assert(writer.BaseStream.Position == BattlePacksOffset);
                 for (int i = 0; i < Constants.NumBattlePacks; i++)
                 {
-                    (BattlePacks[i] != null ? BattlePacks[i] : new BattlePackSaveData()).Save(writer);
+                    (BattlePacks[i] != null ? BattlePacks[i] : new BattlePackSaveData(this)).Save(writer);
                 }
 
                 Debug.Assert(writer.BaseStream.Position == MiscDataOffset);
-                (Misc != null ? Misc : new MiscSaveData()).Save(writer);
+                (Misc != null ? Misc : new MiscSaveData(this)).Save(writer);
 
                 Debug.Assert(writer.BaseStream.Position == CampaignDataOffset);
-                (Campaign != null ? Campaign : new CampaignSaveData()).Save(writer);
+                (Campaign != null ? Campaign : new CampaignSaveData(this)).Save(writer);
 
                 Debug.Assert(writer.BaseStream.Position == DecksOffset);
                 for (int i = 0; i < Constants.NumUserDecks; i++)
                 {
-                    (Decks[i] != null ? Decks[i] : new DeckSaveData()).Save(writer);
+                    (Decks[i] != null ? Decks[i] : new DeckSaveData(this)).Save(writer);
                 }
 
                 Debug.Assert(writer.BaseStream.Position == CardListOffset);
-                (CardList != null ? CardList : new CardListSaveData()).Save(writer);
+                (CardList != null ? CardList : new CardListSaveData(this)).Save(writer);
 
                 Debug.Assert(writer.BaseStream.Length == FileLength);
 

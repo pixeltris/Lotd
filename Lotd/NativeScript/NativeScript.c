@@ -1,3 +1,6 @@
+// C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64\cl.exe
+// C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64\dumpbin.exe
+//
 // C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\cl.exe
 // C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\dumpbin.exe
 // 
@@ -54,11 +57,13 @@ typedef UInt64(WINAPI *GetTickCount64Decl)();
 typedef Int32(WINAPI *GetTickCountDecl)();
 typedef UInt32(*timeGetTimeDecl)();
 
+//REPLACE_ME_WITH_VERSION_SPECIFIC_VALUES
+
 #define NUM_MAIN_DECK_CARDS 60
 #define NUM_SIDE_DECK_CARDS 15
 #define NUM_EXTRA_DECK_CARDS 15
 
-#define NUM_CARDS 7581
+#define NUM_CARDS 20000//7581
 
 #define NUM_AUDIO_SNIPPETS 50
 
@@ -247,8 +252,8 @@ void UnsafeUnHook(Int64 address, UInt8* originalBytes, Int32 length)
 Int64 GetPopcornCoreAddress()
 {
 	// See main_data_address.c
-	Int64 popcornCore = *(Int64*)0x140EA2148;
-	popcornCore = *(Int64*)(popcornCore + 472);
+	Int64 popcornCore = *(Int64*)popcornCoreDataAddress;
+	popcornCore = *(Int64*)(popcornCore + popcornCoreOffset);
 	return popcornCore;
 }
 
@@ -262,8 +267,7 @@ typedef struct ScreenStateInfo
 typedef char(__fastcall *SetScreenStateDecl)(Int64, Int32, double, Int32, char);
 void SetScreenState(ScreenStateInfo* screenStateInfo)
 {
-	// See YGOPopcornCore_loadduel.c / loadduel_addresses.c
-	Int64 screenStateFunctionAddress = 0x14062D140;
+	// See YGOPopcornCore_loadduel.c / loadduel_addresses.c (sub_14062D140)
 	Int64 popcornCoreAddress = GetPopcornCoreAddress();
 	
 	// The screen state id
@@ -306,10 +310,7 @@ void LoadDuel(void* unused)
 	// - See YGOWorkerThread_loadduel.c - sub_1406BF4E0
 	g->srand(g->DuelSeed);//g->srand(Rand());
 
-	// See YGOWorkerThread_loadduel.c / loadduel_addresses.c
-	Int64 loadDuelFunctionAddress = 0x140894220;
-	Int64 coreDuelDataAddress = 0x1410CF430;
-	
+	// See YGOWorkerThread_loadduel.c / loadduel_addresses.c (sub_140894220 / sub_1410CF430)
 	((LoadDuelDecl)loadDuelFunctionAddress)(*(Int64*)coreDuelDataAddress);	
 }
 
@@ -325,9 +326,7 @@ void LoadAndStartDuel(void* unused)
 typedef Int32(__fastcall *SetCardCollectionDecl)(Int64, Int32, Int16*, Int32, Int64, Int64);
 void SetCardCollection(Int64 cardCollectionAddress, Int32 numCards, Int16* cardIds, Int32 numTotalCards)
 {
-	// See deckEditApplyCardFilter.c / cardShopOpenPack.c
-	Int64 setCardCollectionFunctionAddress = 0x1406576B0;
-	
+	// See deckEditApplyCardFilter.c / cardShopOpenPack.c (sub_1406576B0)
 	// last two parameters are related to determining how to calculate the number of available cards
 	// relative to the cards in use
 	((SetCardCollectionDecl)setCardCollectionFunctionAddress)(
@@ -340,13 +339,10 @@ typedef void(__fastcall *DeckEditorSelectedDeckUpdateDecl)(Int64);
 void DeckEditSelectDeck(Int64 deckIndex)
 {
 	// See deckEditHoverUserDeck.c / deckEditOpenTrunk.c
-	Int64 deckEditDeckListSelectFunctionAddress = 0x1406BBD10;
-	Int64 deckEditDeckListUpdateFunctionAddress = 0x14065EB10;
-	Int64 deckEditSelectedDeckUpdateFunctionAddress = 0x14064DA30;
 	Int64 popcornCoreAddress = GetPopcornCoreAddress();
-	Int64 deckEditBaseAddress = *(Int64*)(popcornCoreAddress + 608);	
-	Int64 deckEditUserDecksAddress = deckEditBaseAddress + 5424 + 376;
-	Int64 deckEditUserDecksListAddress = deckEditUserDecksAddress + 232;
+	Int64 deckEditBaseAddress = *(Int64*)(popcornCoreAddress + deckEditBaseOffset);
+	Int64 deckEditUserDecksAddress = deckEditBaseAddress + deckEditUserDecksOffset;
+	Int64 deckEditUserDecksListAddress = deckEditUserDecksAddress + deckEditUserDecksListOffset;
 	
 	// Set the given deck index to "selected" in the list then update the UI to reflect that change
 	((DeckEditorDeckListSelectDecl)deckEditDeckListSelectFunctionAddress)(deckEditUserDecksListAddress, (Int32)deckIndex);
@@ -362,12 +358,11 @@ void OpenDeckEditTrunkPanel()
 {
 	// See deckEditOpenTrunk.c / deckEditApplyCardFilter.c
 	Int64 popcornCoreAddress = GetPopcornCoreAddress();
-	Int64 deckEditBaseAddress = *(Int64*)(popcornCoreAddress + 608);
-	Int64 deckEditUpdateUIFunctionAddress = 0x14064E6D0;
+	Int64 deckEditBaseAddress = *(Int64*)(popcornCoreAddress + deckEditBaseOffset);
 	
-	// Open the trunk panel
-	*(Int32*)(deckEditBaseAddress + 680) = 2;// set the trunk panel to open?
-	*(Int32*)(deckEditBaseAddress + 632) = 2;// focus the right side panel?
+	// Open the trunk panel (sub_14064F4A0)
+	*(Int32*)(deckEditBaseAddress + deckEditTrunkPanelOffset) = 2;// set the trunk panel to open?
+	*(Int32*)(deckEditBaseAddress + deckEditRightPanelOffset) = 2;// focus the right side panel?
 	((DeckEditorUpdateUIDecl)deckEditUpdateUIFunctionAddress)(deckEditBaseAddress);
 }
 
@@ -375,8 +370,8 @@ void SetDeckEditTrunkCards(DeckEditFilterCards* filterCards)
 {
 	// See deckEditApplyCardFilter.c
 	Int64 popcornCoreAddress = GetPopcornCoreAddress();
-	Int64 deckEditBaseAddress = (*(Int64*)(popcornCoreAddress + 608));
-	Int64 deckEditTrunkAddress = deckEditBaseAddress + 9040 + 728;
+	Int64 deckEditBaseAddress = (*(Int64*)(popcornCoreAddress + deckEditBaseOffset));
+	Int64 deckEditTrunkAddress = deckEditBaseAddress + deckEditTrunkOffset;
 	
 	SetCardCollection(deckEditTrunkAddress, filterCards->NumFilteredCards,
 		filterCards->CardIds, filterCards->NumTotalCards);
@@ -389,12 +384,12 @@ void CardShopOpenPack(CardShopOpenPackInfo* packInfo)
 	//       therefore this is only the visuals of opening a pack
 
 	// See cardShopOpenPack.c
-	Int64 cardShopAddress = *(Int64*)0x140EA21A0;
-	Int64 cardShopSetStateFunctionAddress = 0x140653910;
+
+	// NOTE: CardShopSetStateDecl in LE doesn't use the third param. maybe it never existed?
 	
 	// Sets the card list which are browsable once the cards are revealed
 	// (you can technically have a different set of cards to the ones revealed)
-	SetCardCollection(cardShopAddress + 2144, packInfo->NumCards, packInfo->CardIds, -1, NULL, NULL);
+	SetCardCollection(cardShopAddress + cardShopCardListOffset, packInfo->NumCards, packInfo->CardIds, -1);
 	
 	// Set the card shop state to "unwrap" (2) and then to revealing the cards (3)
 	// - "unwrap" is required otherwise the cards are displayed on top of the card shop
@@ -404,19 +399,15 @@ void CardShopOpenPack(CardShopOpenPackInfo* packInfo)
 
 typedef Int32(__fastcall *CardShopRefreshDuelPointsDecl)(Int64);
 void CardShopRefreshDuelPoints(void* unused)
-{	
-	Int64 cardShopAddress = *(Int64*)0x140EA21A0;
-	Int64 cardShopRefreshDuelPointsFunctionAddress = 0x140685C20;
-	
+{
 	// See cardShopOpenPack.c sub_1406522E0 / sub_140685C20
-	((CardShopRefreshDuelPointsDecl)cardShopRefreshDuelPointsFunctionAddress)(cardShopAddress + 632);
+	((CardShopRefreshDuelPointsDecl)cardShopRefreshDuelPointsFunctionAddress)(cardShopAddress + cardShopRefreshDuelPointsOffset);
 }
 
 typedef Int64(__fastcall *ResizeStdVectorDecl)(Int64, Int64);
 Int64 InitCardShopPackOpener(Int64 address)
 {
 	// This should do a resize on the std::vector for the card shop cards address
-	Int64 resizeStdVectorFunctionAddress = 0x1405DE010;	
 	return ((ResizeStdVectorDecl)resizeStdVectorFunctionAddress)(address, 8);
 }
 
@@ -424,8 +415,6 @@ typedef char(__fastcall *PlayAudioDecl)(Int32);
 void PlayAudio(Int64 audioIndex)
 {
 	// See audio.c
-	Int64 playAudioFunctionAddress = 0x1405EEF70;
-	
 	if (audioIndex < NUM_AUDIO_SNIPPETS)
 	{
 		((PlayAudioDecl)playAudioFunctionAddress)((Int32)audioIndex);
@@ -436,12 +425,9 @@ typedef void(__fastcall *StopAudioDecl)(Int64, char);
 void StopAudio(Int64 audioIndex)
 {
 	// See audio.c
-	Int64 stopAudioFunctionAddress = 0x1408F94D0;
-	Int64* audioSnippetsAddress = (Int64*)0x140E8B140;
-	
 	if (audioIndex < NUM_AUDIO_SNIPPETS)
 	{
-		Int64 audioSnippet = audioSnippetsAddress[audioIndex];
+		Int64 audioSnippet = ((Int64*)audioSnippetsAddress)[audioIndex];
 		if (audioSnippet)
 		{
 			// Note that will crash if you provide an index beyond the array length
@@ -465,7 +451,7 @@ void StopAllAudio(void* unused)
 Int64 GetLoadBattlePackYdcFunctionAddress()
 {
 	// YGOWorkerThread_loadduel.c / memory.c (sub_1406BEC60 sub_14088E9E0)
-	return 0x14088E9E0;
+	return loadBattlePackYdcFunctionAddress;
 }
 
 void HookLoadBattlePackYdc()
@@ -475,7 +461,7 @@ void HookLoadBattlePackYdc()
 
 void UnhookLoadBattlePackYdc()
 {
-	UInt8 originalBytes[14] = { 0x48, 0x8b, 0xc4, 0x57, 0x48, 0x81, 0xec, 0x60, 0x01, 0x00, 0x00, 0x48, 0xc7, 0x44 };
+	UInt8 originalBytes[14] = loadBattlePackYdc_original;
 	UnsafeUnHook(GetLoadBattlePackYdcFunctionAddress(), originalBytes, 14);
 }
 
@@ -515,7 +501,7 @@ Int32 LoadBattlePackYdc_hook(TChar* a1, YdcDeck* a2, Int64 a3, Int64 a4)
 Int64 GetDuelInitDeckHandLPFunctionAddress()
 {
 	// See YGOPopcornCore_beginduel_setDuelInfo.c
-	return 0x140080A80;
+	return duelInitDeckHandLPFunctionAddress;
 }
 
 void HookDuelInitDeckHandLP()
@@ -525,30 +511,24 @@ void HookDuelInitDeckHandLP()
 
 void UnhookDuelInitDeckHandLP()
 {
-	UInt8 originalBytes[14] = { 0x40, 0x53, 0x48, 0x83, 0xec, 0x20, 0x83, 0x3d, 0x7f, 0x00, 0x10, 0x01, 0x00, 0xb8 };
+	UInt8 originalBytes[14] = duelInitDeckHandLP_original;
 	UnsafeUnHook(GetDuelInitDeckHandLPFunctionAddress(), originalBytes, 14);
 }
 
 typedef Int64(__fastcall *DuelInitDeckHandLPDecl)();
 Int64 DuelInitDeckHandLP_hook()
-{	
-	Int64 speedDuelAddress = 0x141180B0C;
-	Int64 duelPlayerDataAddress = 0x14117D580;
-	Int64 duelPlayerDataSize = 3472;
-	Int64 duelPlayerDataNumCardsInHandOffset = 12;
-	Int64 duelInitDeckHandLPFunctionAddress = GetDuelInitDeckHandLPFunctionAddress();
-	
+{
 	Globals* g = GetGlobals();
 	
 	// Set speed duel mode if enabled
 	if (g->IsNextDuelSpeedDuel)
 	{
-		g->IsNextDuelSpeedDuel = false;
-		*((UInt8*)speedDuelAddress) = 1;
+		*((UInt8*)speedDuelAddress) = g->IsNextDuelSpeedDuel;
+		g->IsNextDuelSpeedDuel = 0;
 	}
 	
 	UnhookDuelInitDeckHandLP();
-	Int64 result = ((DuelInitDeckHandLPDecl)duelInitDeckHandLPFunctionAddress)();
+	Int64 result = ((DuelInitDeckHandLPDecl)GetDuelInitDeckHandLPFunctionAddress())();
 	HookDuelInitDeckHandLP();
 	
 	// The hand count was just set, replace it with a custom hand count if enabled
@@ -608,7 +588,7 @@ typedef struct ActionInfo
 
 Int64 GetActionHandlerFunctionAddress()
 {
-	return 0x1401012D0;
+	return actionHandlerFunctionAddress;
 }
 
 void HookActionHandler()
@@ -618,13 +598,13 @@ void HookActionHandler()
 
 void UnhookActionHandler()
 {
-	UInt8 originalBytes[14] = { 0x40, 0x53, 0x48, 0x83, 0xec, 0x30, 0x0f, 0xb7, 0x0d, 0xe3, 0x6c, 0xfd, 0x00, 0x41 };
+	UInt8 originalBytes[14] = actionHandler_original;
 	UnsafeUnHook(GetActionHandlerFunctionAddress(), originalBytes, 14);
 }
 
 Int64 GetAnimationHandlerFunctionAddress()
 {
-	return 0x140881DB0;
+	return animationHandlerFunctionAddress;
 }
 
 void HookAnimationHandler()
@@ -634,14 +614,14 @@ void HookAnimationHandler()
 
 void UnhookAnimationHandler()
 {
-	UInt8 originalBytes[14] = { 0x48, 0x89, 0x5c, 0x24, 0x08, 0x48, 0x89, 0x6c, 0x24, 0x10, 0x48, 0x89, 0x74, 0x24 };
+	UInt8 originalBytes[14] = animationHandler_original;
 	UnsafeUnHook(GetAnimationHandlerFunctionAddress(), originalBytes, 14);
 }
 
 void* GetDuelThreadCriticalSection()
 {
 	// See YGOfuncThreadDuel.c (they lock the critical section once per cycle)
-	return (void*)0x1410D4C70;
+	return (void*)duelThreadCriticalSectionAddress;
 }
 
 // I think this is the correct function signature?
@@ -650,9 +630,7 @@ typedef void(__fastcall *ProcessActionDecl)(Int64, Int64, float);
 void ProcessAction(Int64 a1, Int64 a2, float a3)
 {
 	// See  YGOfuncThreadDuel.c
-	Int64 processActionFunctionAddress = 0x1401012D0;
-	
-	((ProcessActionDecl)processActionFunctionAddress)(a1, a2, a3);
+	((ProcessActionDecl)GetActionHandlerFunctionAddress())(a1, a2, a3);
 }
 
 void DoAction(ActionInfo* actionInfo)
@@ -660,13 +638,13 @@ void DoAction(ActionInfo* actionInfo)
 	Globals* g = GetGlobals();
 
 	// See YGOfuncThreadDuel.c
-	ActionElement* currentActionPtr = (ActionElement*)0x1410D7FC0;
-	ActionElement* actionQueuePtr = (ActionElement*)0x1410D7FC8;
-	Int32* hasActiveActionPtr = (Int32*)0x141180BF8;
-	Int32* numQueuedActionsPtr = (Int32*)0x1410D87C8;
-	Int32* currentActionState1Ptr = (Int32*)0x1410D87CC;
-	Int32* currentActionState2Ptr = (Int32*)0x1410D87D0;
-	Int64 drawCardFunctionAddress = 0x14049BA30;
+	ActionElement* currentActionPtr = (ActionElement*)currentActionAddress;
+	ActionElement* actionQueuePtr = (ActionElement*)actionQueueAddress;
+	Int32* hasActiveActionPtr = (Int32*)hasActiveActionAddress;
+	Int32* numQueuedActionsPtr = (Int32*)numQueuedActionsAddress;
+	Int32* currentActionState1Ptr = (Int32*)currentActionState1Address;
+	Int32* currentActionState2Ptr = (Int32*)currentActionState2Address;
+	/*Int64 drawCardFunctionAddress*/
 	
 	void* duelThreadCriticalSection = GetDuelThreadCriticalSection();
 
@@ -783,9 +761,8 @@ void DoAction(ActionInfo* actionInfo)
 typedef void(__fastcall *ActionHandlerDecl)(Int64, Int64);
 void __fastcall ActionHandler_hook(Int64 a1, Int64 a2)
 {
-	Int64 actionHandlerFunctionAddress = GetActionHandlerFunctionAddress();
-	ActionElement* currentActionPtr = (ActionElement*)0x1410D7FC0;
-	Int32* hasActiveActionPtr = (Int32*)0x141180BF8;
+	ActionElement* currentActionPtr = (ActionElement*)currentActionAddress;
+	Int32* hasActiveActionPtr = (Int32*)hasActiveActionAddress;
 	
 	Globals* g = GetGlobals();
 	
@@ -797,7 +774,7 @@ void __fastcall ActionHandler_hook(Int64 a1, Int64 a2)
 	else
 	{
 		UnhookActionHandler();
-		((ActionHandlerDecl)actionHandlerFunctionAddress)(a1, a2);
+		((ActionHandlerDecl)GetActionHandlerFunctionAddress())(a1, a2);
 		HookActionHandler();
 	}
 }
@@ -805,8 +782,6 @@ void __fastcall ActionHandler_hook(Int64 a1, Int64 a2)
 typedef Int64(__fastcall *AnimationHandlerDecl)(Int32, Int32, Int32, Int32, float);
 Int64 __fastcall AnimationHandler_hook(Int32 animationId, Int32 a2, Int32 a3, Int32 a4, float a5)
 {
-	Int64 animationHandlerFunctionAddress = GetAnimationHandlerFunctionAddress();
-	
 	Globals* g = GetGlobals();
 	g->CurrentAnimationId = animationId;
 	
@@ -817,7 +792,7 @@ Int64 __fastcall AnimationHandler_hook(Int32 animationId, Int32 a2, Int32 a3, In
 	else
 	{
 		UnhookAnimationHandler();
-		Int64 result = ((AnimationHandlerDecl)animationHandlerFunctionAddress)(animationId, a2, a3, a4, a5);
+		Int64 result = ((AnimationHandlerDecl)GetAnimationHandlerFunctionAddress())(animationId, a2, a3, a4, a5);
 		HookAnimationHandler();
 		
 		return result;

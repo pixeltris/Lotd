@@ -8,6 +8,11 @@ namespace Lotd
 {
     public class DeckSaveData : DeckSaveDataBase
     {
+        public DeckSaveData(GameSaveData owner)
+            : base(owner)
+        {
+        }
+
         public override void Load(BinaryReader reader)
         {
             LoadDeckData(reader);
@@ -41,7 +46,8 @@ namespace Lotd
         private const int maxSideDeckCards = 15;
         private const int maxExtraDeckCards = 15;
 
-        public DeckSaveDataBase()
+        public DeckSaveDataBase(GameSaveData owner)
+            : base(owner)
         {
             MainDeckCards = new List<short>();
             SideDeckCards = new List<short>();

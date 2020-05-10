@@ -21,7 +21,7 @@ namespace Lotd.UI
         {
             bool saveToMemory = Program.MemTools != null && Program.MemTools.HasProcessHandle;
 
-            GameSaveData saveData = new GameSaveData();
+            GameSaveData saveData = new GameSaveData(Program.Version);
 
             if (saveToMemory)
             {
@@ -175,7 +175,7 @@ namespace Lotd.UI
             if (saveToMemory)
             {
                 byte[] buffer = saveData.ToArray();
-                if (buffer != null && buffer.Length == GameSaveData.FileLength)
+                if (buffer != null && buffer.Length == GameSaveData.GetFileLength(Program.Version))
                 {
                     Program.MemTools.WriteSaveData(buffer);
                 }

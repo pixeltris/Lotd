@@ -79,8 +79,11 @@ namespace Lotd.FileFormats
                 }
                 else if (File.IsArchiveFile)
                 {
-                    File.Archive.Reader.BaseStream.Position = File.ArchiveOffset;
-                    Load(File.Archive.Reader, File.ArchiveLength);
+                    if (File.CanLoadArchive)
+                    {
+                        File.Archive.Reader.BaseStream.Position = File.ArchiveOffset;
+                        Load(File.Archive.Reader, File.ArchiveLength);
+                    }
                     return true;
                 }
                 else
@@ -131,8 +134,11 @@ namespace Lotd.FileFormats
                 }
                 else if (File.IsArchiveFile)
                 {
-                    File.Archive.Reader.BaseStream.Position = File.ArchiveOffset;
-                    Load(File.Archive.Reader, File.ArchiveLength);
+                    if (File.CanLoadArchive)
+                    {
+                        File.Archive.Reader.BaseStream.Position = File.ArchiveOffset;
+                        Load(File.Archive.Reader, File.ArchiveLength);
+                    }
                     return true;
                 }
                 else

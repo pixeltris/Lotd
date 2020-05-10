@@ -35,10 +35,11 @@ namespace Lotd
         public UnlockedShopPacks UnlockedShopPacks { get; set; }
         public UnlockedBattlePacks UnlockedBattlePacks { get; set; }
 
-        public MiscSaveData()
+        public MiscSaveData(GameSaveData owner)
+            : base(owner)
         {
-            Challenges = new DeulistChallengeState[Constants.NumDeckDataSlots];
-            UnlockedRecipes = new bool[Constants.NumDeckDataSlots];
+            Challenges = new DeulistChallengeState[Constants.GetNumDeckDataSlots(Version)];
+            UnlockedRecipes = new bool[Constants.GetNumDeckDataSlots(Version)];
             UnlockedAvatars = new bool[153];
         }
 
@@ -79,13 +80,17 @@ namespace Lotd
                 UnlockedAvatars[i] = (unlockedAvatarsBuffer[byteIndex] & (byte)(1 << bitIndex)) != 0;
             }
 
-            for (int i = 0; i < Constants.NumDeckDataSlots; i++)
+            for (int i = 0; i < Constants.GetNumDeckDataSlots(Version); i++)
             {
-                Challenges[i] = (DeulistChallengeState)reader.ReadInt32();
+                DeulistChallengeState challenge = (DeulistChallengeState)reader.ReadInt32();
+                if (i < Challenges.Length)
+                {
+                    Challenges[i] = challenge;
+                }
             }
-            
-            byte[] unlockedRecipesBuffer = reader.ReadBytes(60);
-            for (int i = 0; i < Constants.NumDeckDataSlots; i++)
+
+            byte[] unlockedRecipesBuffer = reader.ReadBytes(GetRecipeBufferBytes());
+            for (int i = 0; i < Constants.GetNumDeckDataSlots(Version); i++)
             {
                 int byteIndex = i / 8;
                 int bitIndex = i % 8;
@@ -125,20 +130,23 @@ namespace Lotd
             writer.Write(unlockedAvatarsBuffer);
 
             // Challenge data
-            for (int i = 0; i < Constants.NumDeckDataSlots; i++)
+            for (int i = 0; i < Constants.GetNumDeckDataSlots(Version); i++)
             {
-                writer.Write((int)Challenges[i]);
+                writer.Write((int)(i < Challenges.Length ? Challenges[i] : 0));
             }
 
             // Unlocked recipes
-            byte[] unlockedRecipesBuffer = new byte[60];
+            byte[] unlockedRecipesBuffer = new byte[GetRecipeBufferBytes()];
             for (int i = 0; i < UnlockedRecipes.Length; i++)
             {
                 if (UnlockedRecipes[i])
                 {
                     int byteIndex = i / 8;
                     int bitIndex = i % 8;
-                    unlockedRecipesBuffer[byteIndex] |= (byte)(1 << bitIndex);
+                    if (byteIndex < unlockedRecipesBuffer.Length)
+                    {
+                        unlockedRecipesBuffer[byteIndex] |= (byte)(1 << bitIndex);
+                    }
                 }
             }
             writer.Write(unlockedRecipesBuffer);
@@ -152,6 +160,24 @@ namespace Lotd
 
             writer.Write((int)CompleteTutorials);
             writer.Write((int)UnlockedContent);
+        }
+
+        int GetRecipeBufferBytes()
+        {
+            return GetRecipeBufferBytes(Version);
+        }
+
+        public static int GetRecipeBufferBytes(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 60;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 88;
+            }
         }
     }
 
@@ -212,6 +238,8 @@ namespace Lotd
         Pendulum = 1 << 24,
         GongStrong = 1 << 25,
         ZuzuBoyle = 1 << 26,
+
+        Unknown = 0x80000000,
 
         All = 0xFFFFFFFF
     }

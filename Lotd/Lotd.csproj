@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Lotd</RootNamespace>
     <AssemblyName>Lotd</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -57,6 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="GameVersion.cs" />
+    <Compile Include="NativeScript\MemTools.Addresses.LotdLE_v1.cs" />
+    <Compile Include="NativeScript\MemTools.Addresses.LotdLE_v2.cs" />
+    <Compile Include="NativeScript\MemTools.Addresses.Lotd.cs" />
+    <Compile Include="NativeScript\NativeScript.Generated.LotdLE_v2.cs" />
+    <Compile Include="NativeScript\NativeScript.Generated.LotdLE_v1.cs" />
     <Compile Include="UI\AnimationsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,14 +99,13 @@
     <Compile Include="FileFormats\misc\StringBnd.cs" />
     <Compile Include="FileFormats\ZibData.cs" />
     <Compile Include="NativeScript\MemTools.Actions.cs" />
-    <Compile Include="NativeScript\MemTools.Addresses.cs" />
     <Compile Include="NativeScript\MemTools.cs" />
     <Compile Include="NativeScript\MemTools.Structures.cs" />
     <Compile Include="NativeScript\MemTools.TimeMultiplier.cs" />
     <Compile Include="NativeScript\NativeScript.Globals.cs" />
     <Compile Include="NativeScript\MemTools.PInvoke.cs" />
     <Compile Include="NativeScript\NativeScriptCompiler.cs" />
-    <Compile Include="NativeScript\NativeScript.Generated.cs" />
+    <Compile Include="NativeScript\NativeScript.Generated.Lotd.cs" />
     <Compile Include="SaveData\BattlePackSaveData.cs" />
     <Compile Include="SaveData\CampaignSaveData.cs" />
     <Compile Include="SaveData\CardListSaveData.cs" />
@@ -140,6 +146,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +158,15 @@
     <None Include="YdkIds.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NativeScript\NativeScript.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NativeScript\NativeScript.Lotd.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NativeScript\NativeScript.LotdLE_v2.c" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

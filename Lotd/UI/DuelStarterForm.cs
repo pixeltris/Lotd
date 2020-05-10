@@ -46,6 +46,7 @@ namespace Lotd.UI
             duelArenaComboBox.SelectedIndex = 0;
 
             startingPlayerComboBox.SelectedIndex = 0;
+            duelKindComboBox.SelectedIndex = 0;
 
             ReloadDecks();
 
@@ -501,7 +502,8 @@ namespace Lotd.UI
             startDuelInfo.SetController(MemTools.Player.TagOpponent,
                 player4AICheckBox.Checked ? MemTools.PlayerController.AI : MemTools.PlayerController.Player);            
             startDuelInfo.UseSpeedDuelLifePoints = false;
-            startDuelInfo.SpeedDuel = speedDuelCheckBox.Checked;
+            startDuelInfo.SpeedDuel = duelKindComboBox.SelectedIndex == 1;
+            startDuelInfo.RushDuel = duelKindComboBox.SelectedIndex == 2;
             startDuelInfo.TagDuel = tagDuelCheckBox.Checked;
             startDuelInfo.Match = matchDuelCheckBox.Checked;
             startDuelInfo.Arena = (MemTools.DuelArena)duelArenaComboBox.SelectedItem;
@@ -527,6 +529,7 @@ namespace Lotd.UI
             startDuelInfo.LifePoints = (int)lifePointsNumericUpDown.Value;
             startDuelInfo.StartingHandCount = (int)startingHandNumericUpDown.Value;
             startDuelInfo.FullReload = fullReloadCheckBox.Checked;
+            startDuelInfo.MasterRules5 = masterRules5CheckBox.Checked;
 
             startDuelInfo.SetAvatarId(MemTools.Player.Self, playerDecks[0].DeckAvatarId);
             startDuelInfo.SetAvatarId(MemTools.Player.Opponent, playerDecks[1].DeckAvatarId);

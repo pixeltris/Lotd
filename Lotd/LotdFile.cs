@@ -24,6 +24,26 @@ namespace Lotd
             get { return !string.IsNullOrEmpty(FilePathOnDisk) && File.Exists(FilePathOnDisk); }
         }
 
+        public bool CanLoadArchive
+        {
+            get
+            {
+                if (Archive.Version == GameVersion.Lotd)
+                {
+                    return true;
+                }
+                switch (FileType)
+                {
+                    case LotdFileType.Zib:
+                    case LotdFileType.CharDataBin:
+                    case LotdFileType.DeckDataBin:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
         /// <summary>
         /// The file path on disk (use this when adding new files from disk)
         /// </summary>

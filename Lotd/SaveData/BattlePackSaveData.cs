@@ -40,7 +40,8 @@ namespace Lotd
         public const int NumDraftedCards = 90;
         public const int NumSealedCardsPerSegment = 15;
 
-        public BattlePackSaveData()
+        public BattlePackSaveData(GameSaveData owner)
+            : base(owner)
         {
             DraftedCards = new List<short>();
             SealedCards1 = new List<short>();

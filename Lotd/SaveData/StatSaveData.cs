@@ -10,9 +10,24 @@ namespace Lotd
     {
         public Dictionary<StatSaveType, long> Stats { get; private set; }
 
-        static int numStats = 43;
+        int numStats
+        {
+            get
+            {
+                switch (Version)
+                {
+                    default:
+                    case GameVersion.Lotd:
+                        return 43;
+                    case GameVersion.LinkEvolution1:
+                    case GameVersion.LinkEvolution2:
+                        return 100;
+                }
+            }
+        }
 
-        public StatSaveData()
+        public StatSaveData(GameSaveData owner)
+            : base(owner)
         {
             Stats = new Dictionary<StatSaveType, long>();
         }
@@ -91,6 +106,7 @@ namespace Lotd
         Damage_Reflect,
         Chains,
         Decks_Created,
+        Cards_Earned,
 
         /// <summary>
         /// There seems to be one additional value.

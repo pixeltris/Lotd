@@ -8,6 +8,32 @@ namespace Lotd
 {
     partial class NativeScript
     {
+        public abstract class Script
+        {
+            public string ScriptHash;
+            public int GlobalsAddressOffset;
+            public Dictionary<string, int> Functions;
+            public byte[] Buffer;
+        }
+
+        public static Dictionary<GameVersion, Script> Scripts = new Dictionary<GameVersion, Script>()
+        {
+            { GameVersion.Lotd, new Script_Lotd() },
+            { GameVersion.LinkEvolution1, new Script_LotdLE_v1() },
+            { GameVersion.LinkEvolution2, new Script_LotdLE_v2() }
+        };
+
+        public static string GetVersionName(GameVersion version)
+        {
+            switch (version)
+            {
+                case GameVersion.Lotd: return "Lotd";
+                case GameVersion.LinkEvolution1: return "LotdLE_v1";
+                case GameVersion.LinkEvolution2: return "LotdLE_v2";
+                default: return null;
+            }
+        }
+
         // Must be the exact same struct as NativeScript.c
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct Globals

@@ -7,13 +7,66 @@ namespace Lotd
 {
     public static class Constants
     {
-        public const int NumCards = 7581;
-        public const ushort MaxCardId = 12432;
+        public const GameVersion LatestVersion = GameVersion.LinkEvolution2;
+
+        public const int AbsoluteMaxNumCards = 20000;// Keep this as a constant
+        public static int NumCards { get { return GetNumCards(Program.Version); } }
+        public static int GetNumCards(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 7581;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 10166;
+            }
+        }
+
+        public static int NumCards2 { get { return GetNumCards2(Program.Version); } }
+        public static int GetNumCards2(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return GetNumCards(version);
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 20000;
+            }
+        }
+        public static ushort GetMaxCardId(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 12432;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 14969;
+            }
+        }
+        public static ushort MaxCardId { get { return GetMaxCardId(Program.Version); } }
 
         /// <summary>
         /// Number of duel series (YuGiOh, GX, 5D, ZEXAL, ARCV)
         /// </summary>
-        public const int NumDuelSeries = 5;
+        public static int NumDuelSeries { get { return GetNumDuelSeries(Program.Version); } }
+        public static int GetNumDuelSeries(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 5;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 6;
+            }
+        }
 
         /// <summary>
         /// Number of available user deck slots which can be created in in the deck editor
@@ -28,7 +81,19 @@ namespace Lotd
         /// <summary>
         /// Number of deck slots available which map into deckdata_X.bin
         /// </summary>
-        public const int NumDeckDataSlots = 477;
+        public static int NumDeckDataSlots { get { return GetNumDeckDataSlots(Program.Version); } }
+        public static int GetNumDeckDataSlots(GameVersion version)
+        {
+            switch (version)
+            {
+                default:
+                case GameVersion.Lotd:
+                    return 477;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    return 700;
+            }
+        }
 
         /// <summary>
         /// The length of a deck name (this is technically 32 with a null terminator)

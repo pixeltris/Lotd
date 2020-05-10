@@ -23,10 +23,12 @@ namespace Lotd
         public CardManager CardManager { get; set; }
 
         public Language CurrentLanguage { get; set; }
+        public GameVersion Version { get; private set; }
 
-        public Manager()
+        public Manager(GameVersion version)
         {
-            Archive = new LotdArchive();
+            Version = version;
+            Archive = new LotdArchive(version);
             CurrentLanguage = Language.English;
 
             BattlePackData = new List<BattlePackData>();

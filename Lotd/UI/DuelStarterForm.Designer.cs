@@ -54,7 +54,6 @@
             this.filterDeckPendulumCheckBox = new System.Windows.Forms.CheckBox();
             this.player1DeckLabel = new System.Windows.Forms.Label();
             this.duelArenaComboBox = new System.Windows.Forms.ComboBox();
-            this.speedDuelCheckBox = new System.Windows.Forms.CheckBox();
             this.lifePointsLabel = new System.Windows.Forms.Label();
             this.lifePointsNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.skipRockPaperScissorsCheckBox = new System.Windows.Forms.CheckBox();
@@ -76,11 +75,13 @@
             this.speedMultiplierNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.speedMultiplierLabel = new System.Windows.Forms.Label();
             this.speedMultiplierApplyButton = new System.Windows.Forms.Button();
-            this.animationsButton = new System.Windows.Forms.Button();
-            this.unlockContentButtonButton = new System.Windows.Forms.Button();
             this.duelSettingsPanel = new System.Windows.Forms.Panel();
+            this.masterRules5CheckBox = new System.Windows.Forms.CheckBox();
             this.duelRewardsCheckBox = new System.Windows.Forms.CheckBox();
+            this.unlockContentButtonButton = new System.Windows.Forms.Button();
+            this.animationsButton = new System.Windows.Forms.Button();
             this.setsDecksPanel = new System.Windows.Forms.Panel();
+            this.duelKindComboBox = new System.Windows.Forms.ComboBox();
             this.decksListPanel1.SuspendLayout();
             this.playerDeckButtonsPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -366,7 +367,7 @@
             // player1DeckLabel
             // 
             this.player1DeckLabel.AutoSize = true;
-            this.player1DeckLabel.Location = new System.Drawing.Point(3, 265);
+            this.player1DeckLabel.Location = new System.Drawing.Point(3, 287);
             this.player1DeckLabel.Name = "player1DeckLabel";
             this.player1DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player1DeckLabel.TabIndex = 7;
@@ -376,25 +377,15 @@
             // 
             this.duelArenaComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.duelArenaComboBox.FormattingEnabled = true;
-            this.duelArenaComboBox.Location = new System.Drawing.Point(80, 189);
+            this.duelArenaComboBox.Location = new System.Drawing.Point(80, 211);
             this.duelArenaComboBox.Name = "duelArenaComboBox";
             this.duelArenaComboBox.Size = new System.Drawing.Size(146, 21);
             this.duelArenaComboBox.TabIndex = 10;
             // 
-            // speedDuelCheckBox
-            // 
-            this.speedDuelCheckBox.AutoSize = true;
-            this.speedDuelCheckBox.Location = new System.Drawing.Point(5, 74);
-            this.speedDuelCheckBox.Name = "speedDuelCheckBox";
-            this.speedDuelCheckBox.Size = new System.Drawing.Size(82, 17);
-            this.speedDuelCheckBox.TabIndex = 11;
-            this.speedDuelCheckBox.Text = "Speed Duel";
-            this.speedDuelCheckBox.UseVisualStyleBackColor = true;
-            // 
             // lifePointsLabel
             // 
             this.lifePointsLabel.AutoSize = true;
-            this.lifePointsLabel.Location = new System.Drawing.Point(4, 220);
+            this.lifePointsLabel.Location = new System.Drawing.Point(4, 242);
             this.lifePointsLabel.Name = "lifePointsLabel";
             this.lifePointsLabel.Size = new System.Drawing.Size(59, 13);
             this.lifePointsLabel.TabIndex = 13;
@@ -402,7 +393,7 @@
             // 
             // lifePointsNumericUpDown
             // 
-            this.lifePointsNumericUpDown.Location = new System.Drawing.Point(67, 216);
+            this.lifePointsNumericUpDown.Location = new System.Drawing.Point(67, 238);
             this.lifePointsNumericUpDown.Maximum = new decimal(new int[] {
             60000,
             0,
@@ -432,7 +423,7 @@
             // player2DeckLabel
             // 
             this.player2DeckLabel.AutoSize = true;
-            this.player2DeckLabel.Location = new System.Drawing.Point(3, 284);
+            this.player2DeckLabel.Location = new System.Drawing.Point(3, 306);
             this.player2DeckLabel.Name = "player2DeckLabel";
             this.player2DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player2DeckLabel.TabIndex = 16;
@@ -441,7 +432,7 @@
             // player4DeckLabel
             // 
             this.player4DeckLabel.AutoSize = true;
-            this.player4DeckLabel.Location = new System.Drawing.Point(3, 322);
+            this.player4DeckLabel.Location = new System.Drawing.Point(3, 344);
             this.player4DeckLabel.Name = "player4DeckLabel";
             this.player4DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player4DeckLabel.TabIndex = 18;
@@ -450,7 +441,7 @@
             // player3DeckLabel
             // 
             this.player3DeckLabel.AutoSize = true;
-            this.player3DeckLabel.Location = new System.Drawing.Point(3, 303);
+            this.player3DeckLabel.Location = new System.Drawing.Point(3, 325);
             this.player3DeckLabel.Name = "player3DeckLabel";
             this.player3DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player3DeckLabel.TabIndex = 17;
@@ -458,7 +449,7 @@
             // 
             // startingHandNumericUpDown
             // 
-            this.startingHandNumericUpDown.Location = new System.Drawing.Point(67, 240);
+            this.startingHandNumericUpDown.Location = new System.Drawing.Point(67, 262);
             this.startingHandNumericUpDown.Maximum = new decimal(new int[] {
             60000,
             0,
@@ -476,7 +467,7 @@
             // startHandLabel
             // 
             this.startHandLabel.AutoSize = true;
-            this.startHandLabel.Location = new System.Drawing.Point(4, 243);
+            this.startHandLabel.Location = new System.Drawing.Point(4, 265);
             this.startHandLabel.Name = "startHandLabel";
             this.startHandLabel.Size = new System.Drawing.Size(61, 13);
             this.startHandLabel.TabIndex = 19;
@@ -484,7 +475,7 @@
             // 
             // startDuelButton
             // 
-            this.startDuelButton.Location = new System.Drawing.Point(4, 363);
+            this.startDuelButton.Location = new System.Drawing.Point(4, 385);
             this.startDuelButton.Name = "startDuelButton";
             this.startDuelButton.Size = new System.Drawing.Size(75, 23);
             this.startDuelButton.TabIndex = 21;
@@ -495,7 +486,7 @@
             // player1AICheckBox
             // 
             this.player1AICheckBox.AutoSize = true;
-            this.player1AICheckBox.Location = new System.Drawing.Point(5, 341);
+            this.player1AICheckBox.Location = new System.Drawing.Point(5, 363);
             this.player1AICheckBox.Name = "player1AICheckBox";
             this.player1AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player1AICheckBox.TabIndex = 22;
@@ -507,7 +498,7 @@
             this.player2AICheckBox.AutoSize = true;
             this.player2AICheckBox.Checked = true;
             this.player2AICheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.player2AICheckBox.Location = new System.Drawing.Point(60, 341);
+            this.player2AICheckBox.Location = new System.Drawing.Point(60, 363);
             this.player2AICheckBox.Name = "player2AICheckBox";
             this.player2AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player2AICheckBox.TabIndex = 23;
@@ -519,7 +510,7 @@
             this.player3AICheckBox.AutoSize = true;
             this.player3AICheckBox.Checked = true;
             this.player3AICheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.player3AICheckBox.Location = new System.Drawing.Point(115, 341);
+            this.player3AICheckBox.Location = new System.Drawing.Point(115, 363);
             this.player3AICheckBox.Name = "player3AICheckBox";
             this.player3AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player3AICheckBox.TabIndex = 24;
@@ -531,7 +522,7 @@
             this.player4AICheckBox.AutoSize = true;
             this.player4AICheckBox.Checked = true;
             this.player4AICheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.player4AICheckBox.Location = new System.Drawing.Point(170, 340);
+            this.player4AICheckBox.Location = new System.Drawing.Point(170, 362);
             this.player4AICheckBox.Name = "player4AICheckBox";
             this.player4AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player4AICheckBox.TabIndex = 25;
@@ -551,7 +542,7 @@
             "Random",
             "Self",
             "Opponent"});
-            this.startingPlayerComboBox.Location = new System.Drawing.Point(80, 164);
+            this.startingPlayerComboBox.Location = new System.Drawing.Point(80, 186);
             this.startingPlayerComboBox.Name = "startingPlayerComboBox";
             this.startingPlayerComboBox.Size = new System.Drawing.Size(146, 21);
             this.startingPlayerComboBox.TabIndex = 26;
@@ -571,7 +562,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(2, 168);
+            this.label1.Location = new System.Drawing.Point(2, 190);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 13);
             this.label1.TabIndex = 28;
@@ -580,7 +571,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 194);
+            this.label2.Location = new System.Drawing.Point(2, 216);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 13);
             this.label2.TabIndex = 29;
@@ -628,28 +619,10 @@
             this.speedMultiplierApplyButton.UseVisualStyleBackColor = true;
             this.speedMultiplierApplyButton.Click += new System.EventHandler(this.speedMultiplierApplyButton_Click);
             // 
-            // animationsButton
-            // 
-            this.animationsButton.Location = new System.Drawing.Point(79, 0);
-            this.animationsButton.Name = "animationsButton";
-            this.animationsButton.Size = new System.Drawing.Size(75, 23);
-            this.animationsButton.TabIndex = 34;
-            this.animationsButton.Text = "Animations";
-            this.animationsButton.UseVisualStyleBackColor = true;
-            this.animationsButton.Click += new System.EventHandler(this.animationsButton_Click);
-            // 
-            // unlockContentButtonButton
-            // 
-            this.unlockContentButtonButton.Location = new System.Drawing.Point(2, 0);
-            this.unlockContentButtonButton.Name = "unlockContentButtonButton";
-            this.unlockContentButtonButton.Size = new System.Drawing.Size(75, 23);
-            this.unlockContentButtonButton.TabIndex = 35;
-            this.unlockContentButtonButton.Text = "Modify Save";
-            this.unlockContentButtonButton.UseVisualStyleBackColor = true;
-            this.unlockContentButtonButton.Click += new System.EventHandler(this.unlockContentButtonButton_Click);
-            // 
             // duelSettingsPanel
             // 
+            this.duelSettingsPanel.Controls.Add(this.duelKindComboBox);
+            this.duelSettingsPanel.Controls.Add(this.masterRules5CheckBox);
             this.duelSettingsPanel.Controls.Add(this.duelRewardsCheckBox);
             this.duelSettingsPanel.Controls.Add(this.speedMultiplierLabel);
             this.duelSettingsPanel.Controls.Add(this.tagDuelCheckBox);
@@ -657,7 +630,6 @@
             this.duelSettingsPanel.Controls.Add(this.player1DeckLabel);
             this.duelSettingsPanel.Controls.Add(this.speedMultiplierApplyButton);
             this.duelSettingsPanel.Controls.Add(this.duelArenaComboBox);
-            this.duelSettingsPanel.Controls.Add(this.speedDuelCheckBox);
             this.duelSettingsPanel.Controls.Add(this.speedMultiplierNumericUpDown);
             this.duelSettingsPanel.Controls.Add(this.lifePointsLabel);
             this.duelSettingsPanel.Controls.Add(this.label2);
@@ -682,6 +654,18 @@
             this.duelSettingsPanel.Size = new System.Drawing.Size(278, 425);
             this.duelSettingsPanel.TabIndex = 36;
             // 
+            // masterRules5CheckBox
+            // 
+            this.masterRules5CheckBox.AutoSize = true;
+            this.masterRules5CheckBox.Checked = true;
+            this.masterRules5CheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.masterRules5CheckBox.Location = new System.Drawing.Point(5, 166);
+            this.masterRules5CheckBox.Name = "masterRules5CheckBox";
+            this.masterRules5CheckBox.Size = new System.Drawing.Size(173, 17);
+            this.masterRules5CheckBox.TabIndex = 34;
+            this.masterRules5CheckBox.Text = "Master Rules 5 (Link Evolution)";
+            this.masterRules5CheckBox.UseVisualStyleBackColor = true;
+            // 
             // duelRewardsCheckBox
             // 
             this.duelRewardsCheckBox.AutoSize = true;
@@ -694,6 +678,26 @@
             this.duelRewardsCheckBox.Text = "Rewards";
             this.duelRewardsCheckBox.UseVisualStyleBackColor = true;
             // 
+            // unlockContentButtonButton
+            // 
+            this.unlockContentButtonButton.Location = new System.Drawing.Point(2, 0);
+            this.unlockContentButtonButton.Name = "unlockContentButtonButton";
+            this.unlockContentButtonButton.Size = new System.Drawing.Size(75, 23);
+            this.unlockContentButtonButton.TabIndex = 35;
+            this.unlockContentButtonButton.Text = "Modify Save";
+            this.unlockContentButtonButton.UseVisualStyleBackColor = true;
+            this.unlockContentButtonButton.Click += new System.EventHandler(this.unlockContentButtonButton_Click);
+            // 
+            // animationsButton
+            // 
+            this.animationsButton.Location = new System.Drawing.Point(79, 0);
+            this.animationsButton.Name = "animationsButton";
+            this.animationsButton.Size = new System.Drawing.Size(75, 23);
+            this.animationsButton.TabIndex = 34;
+            this.animationsButton.Text = "Animations";
+            this.animationsButton.UseVisualStyleBackColor = true;
+            this.animationsButton.Click += new System.EventHandler(this.animationsButton_Click);
+            // 
             // setsDecksPanel
             // 
             this.setsDecksPanel.Controls.Add(this.animationsButton);
@@ -703,6 +707,19 @@
             this.setsDecksPanel.Name = "setsDecksPanel";
             this.setsDecksPanel.Size = new System.Drawing.Size(278, 25);
             this.setsDecksPanel.TabIndex = 37;
+            // 
+            // duelKindComboBox
+            // 
+            this.duelKindComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.duelKindComboBox.FormattingEnabled = true;
+            this.duelKindComboBox.Items.AddRange(new object[] {
+            "Regular",
+            "Speed",
+            "Rush"});
+            this.duelKindComboBox.Location = new System.Drawing.Point(3, 70);
+            this.duelKindComboBox.Name = "duelKindComboBox";
+            this.duelKindComboBox.Size = new System.Drawing.Size(118, 21);
+            this.duelKindComboBox.TabIndex = 35;
             // 
             // DuelStarterForm
             // 
@@ -741,7 +758,6 @@
         private System.Windows.Forms.Label player1DeckLabel;
         private System.Windows.Forms.ComboBox duelArenaComboBox;
         private System.Windows.Forms.CheckBox autoViewDeckCheckBox;
-        private System.Windows.Forms.CheckBox speedDuelCheckBox;
         private System.Windows.Forms.Label lifePointsLabel;
         private System.Windows.Forms.NumericUpDown lifePointsNumericUpDown;
         private System.Windows.Forms.CheckBox skipRockPaperScissorsCheckBox;
@@ -771,10 +787,7 @@
         private System.Windows.Forms.NumericUpDown speedMultiplierNumericUpDown;
         private System.Windows.Forms.Label speedMultiplierLabel;
         private System.Windows.Forms.Button speedMultiplierApplyButton;
-        private System.Windows.Forms.Button animationsButton;
-        private System.Windows.Forms.Button unlockContentButtonButton;
         private System.Windows.Forms.Panel duelSettingsPanel;
-        private System.Windows.Forms.Panel setsDecksPanel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox deckFilterTextBox;
         private System.Windows.Forms.CheckBox duelRewardsCheckBox;
@@ -784,5 +797,10 @@
         private System.Windows.Forms.CheckBox filterDeckFusionCheckBox;
         private System.Windows.Forms.CheckBox filterDeckSynchroCheckBox;
         private System.Windows.Forms.CheckBox filterDeckPendulumCheckBox;
+        private System.Windows.Forms.CheckBox masterRules5CheckBox;
+        private System.Windows.Forms.Button unlockContentButtonButton;
+        private System.Windows.Forms.Button animationsButton;
+        private System.Windows.Forms.Panel setsDecksPanel;
+        private System.Windows.Forms.ComboBox duelKindComboBox;
     }
 }

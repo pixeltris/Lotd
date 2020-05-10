@@ -18,7 +18,8 @@ namespace Lotd
 
         public const int DuelsPerSeries = 50;
 
-        public CampaignSaveData()
+        public CampaignSaveData(GameSaveData owner)
+            : base(owner)
         {
             DuelsBySeries = new Dictionary<DuelSeries, Duel[]>();
             DuelsBySeries.Add(DuelSeries.YuGiOh, new Duel[DuelsPerSeries]);
@@ -26,6 +27,7 @@ namespace Lotd
             DuelsBySeries.Add(DuelSeries.YuGiOh5D, new Duel[DuelsPerSeries]);
             DuelsBySeries.Add(DuelSeries.YuGiOhZEXAL, new Duel[DuelsPerSeries]);
             DuelsBySeries.Add(DuelSeries.YuGiOhARCV, new Duel[DuelsPerSeries]);
+            DuelsBySeries.Add(DuelSeries.YuGiOhVRAINS, new Duel[DuelsPerSeries]);
 
             foreach (KeyValuePair<DuelSeries, Duel[]> seriesDuels in DuelsBySeries)
             {
@@ -60,7 +62,7 @@ namespace Lotd
             reader.ReadInt32();
             reader.ReadInt32();
 
-            for (int i = 0; i < Constants.NumDuelSeries; i++)
+            for (int i = 0; i < Constants.GetNumDuelSeries(Version); i++)
             {
                 DuelSeries series = IndexToSeries(i);
 
@@ -82,7 +84,7 @@ namespace Lotd
             writer.Write(0);// 0?
             writer.Write(1);// 1 on a clean save (2 on first series complete?)
 
-            for (int i = 0; i < Constants.NumDuelSeries; i++)
+            for (int i = 0; i < Constants.GetNumDuelSeries(Version); i++)
             {
                 DuelSeries series = IndexToSeries(i);
 

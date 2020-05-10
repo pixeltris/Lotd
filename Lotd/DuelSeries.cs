@@ -12,6 +12,7 @@ namespace Lotd
         YuGiOhGX = 1,
         YuGiOh5D = 2,
         YuGiOhZEXAL = 3,
-        YuGiOhARCV = 4
+        YuGiOhARCV = 4,
+        YuGiOhVRAINS = 5
     }
 }

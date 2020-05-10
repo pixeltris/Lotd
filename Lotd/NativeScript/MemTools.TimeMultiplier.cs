@@ -28,21 +28,21 @@ namespace Lotd
 
             if (!timeMultiplierHooksInitialized)
             {
-                if (globals.QueryPerformanceCounterFuncAddr != IntPtr.Zero && queryPerformanceCounterAddress != IntPtr.Zero)
+                if (globals.QueryPerformanceCounterFuncAddr != IntPtr.Zero && addresses.queryPerformanceCounterAddress != IntPtr.Zero)
                 {
-                    WriteValue(queryPerformanceCounterAddress, GetNativeScriptFunctionAddress("QueryPerformanceCounter_hook"));
+                    WriteValue(addresses.queryPerformanceCounterAddress, GetNativeScriptFunctionAddress("QueryPerformanceCounter_hook"));
                 }
-                if (globals.GetTickCount64FuncAddr != IntPtr.Zero && getTickCount64Address != IntPtr.Zero)
+                if (globals.GetTickCount64FuncAddr != IntPtr.Zero && addresses.getTickCount64Address != IntPtr.Zero)
                 {
-                    WriteValue(getTickCount64Address, GetNativeScriptFunctionAddress("GetTickCount64_hook"));
+                    WriteValue(addresses.getTickCount64Address, GetNativeScriptFunctionAddress("GetTickCount64_hook"));
                 }
-                if (globals.GetTickCountFuncAddr != IntPtr.Zero && getTickCountAddress != IntPtr.Zero)
+                if (globals.GetTickCountFuncAddr != IntPtr.Zero && addresses.getTickCountAddress != IntPtr.Zero)
                 {
-                    WriteValue(getTickCountAddress, GetNativeScriptFunctionAddress("GetTickCount_hook"));
+                    WriteValue(addresses.getTickCountAddress, GetNativeScriptFunctionAddress("GetTickCount_hook"));
                 }
-                if (globals.TimeGetTimeFuncAddr != IntPtr.Zero && timeGetTimeAddress != IntPtr.Zero)
+                if (globals.TimeGetTimeFuncAddr != IntPtr.Zero && addresses.timeGetTimeAddress != IntPtr.Zero)
                 {
-                    WriteValue(timeGetTimeAddress, GetNativeScriptFunctionAddress("timeGetTime_hook"));
+                    WriteValue(addresses.timeGetTimeAddress, GetNativeScriptFunctionAddress("timeGetTime_hook"));
                 }
                 timeMultiplierHooksInitialized = true;
             }

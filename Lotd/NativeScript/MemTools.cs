@@ -14,6 +14,8 @@ namespace Lotd
         // For randomizing seed
         private Random rand = new Random();
 
+        private Addresses_Lotd addresses;
+
         // Cache addresses of custom battle pack data
         private Dictionary<string, IntPtr> customBattlePackDataAddresses = new Dictionary<string, IntPtr>();
         private int customBattlePackMaxDataLen = 8192;
@@ -44,8 +46,26 @@ namespace Lotd
         public event EventHandler Loaded;
         public event EventHandler Unloaded;
 
-        public MemTools()
+        public GameVersion Version { get; private set; }
+
+        public MemTools(GameVersion version)
         {
+            Version = version;
+
+            switch (version)
+            {
+                case GameVersion.Lotd:
+                    addresses = new Addresses_Lotd();
+                    break;
+                case GameVersion.LinkEvolution1:
+                    addresses = new Addresses_LotdLE_v1();
+                    break;
+                case GameVersion.LinkEvolution2:
+                    addresses = new Addresses_LotdLE_v2();
+                    break;
+            }
+            addresses.Mem = this;
+
             ValidateStructs();
             UseScreenStateTransitions = true;
         }
@@ -53,10 +73,10 @@ namespace Lotd
         private void ValidateStructs()
         {
             Debug.Assert(Marshal.SizeOf(typeof(YdcDeck)) == 304);
-            Debug.Assert(Marshal.SizeOf(typeof(YdcDeck)) == GameSaveData.DecksSize / Constants.NumUserDecks);
+            Debug.Assert(Marshal.SizeOf(typeof(YdcDeck)) == GameSaveData.GetDecksSize(Version) / Constants.NumUserDecks);
             Debug.Assert(Marshal.SizeOf(typeof(CardProps)) == 48);
             Debug.Assert(Marshal.SizeOf(typeof(RawPackDefData)) == 56);
-            Debug.Assert(Marshal.SizeOf(typeof(DuelPlayerInfo)) == 3472);
+            Debug.Assert(Marshal.SizeOf(typeof(DuelPlayerInfo)) == 3472);// LE = 3476
         }
 
         private void ValidateNativeScriptStructs()
@@ -139,8 +159,19 @@ namespace Lotd
             globals.GetCurrentProcessFuncAddr = GetProcAddress("Kernel32", "GetCurrentProcess");
             globals.WriteProcessMemoryFuncAddr = GetProcAddress("Kernel32", "WriteProcessMemory");
             globals.VirtualProtectFuncAddr = GetProcAddress("Kernel32", "VirtualProtect");
-            globals.EnterCriticalSectionFuncAddr = GetProcAddress("Kernel32", "EnterCriticalSection");
-            globals.LeaveCriticalSectionFuncAddr = GetProcAddress("Kernel32", "LeaveCriticalSection");
+            switch (Version)
+            {
+                case GameVersion.Lotd:
+                    globals.EnterCriticalSectionFuncAddr = GetProcAddress("Kernel32", "EnterCriticalSection");
+                    globals.LeaveCriticalSectionFuncAddr = GetProcAddress("Kernel32", "LeaveCriticalSection");
+                    break;
+                case GameVersion.LinkEvolution1:
+                case GameVersion.LinkEvolution2:
+                    globals.EnterCriticalSectionFuncAddr = GetProcAddress("MSVCP140", "_Mtx_lock");
+                    globals.LeaveCriticalSectionFuncAddr = GetProcAddress("MSVCP140", "_Mtx_unlock");
+                    break;
+            }
+            
             globals.srandFuncAddr = GetProcAddress("ucrtbase", "srand");
             globals.QueryPerformanceCounterFuncAddr = GetProcAddress("Kernel32", "QueryPerformanceCounter");
             globals.GetTickCount64FuncAddr = GetProcAddress("Kernel32", "GetTickCount64");
@@ -184,6 +215,12 @@ namespace Lotd
             // Clear the duel loading screen wait time (make this optional?)
             SetMinimumDuelLoadingScreenTime(0);
 
+            // Change jz to jmp to avoid window focus pausing
+            if (addresses.windowFocusPauseAddress != IntPtr.Zero)
+            {
+                WriteValue<byte>(addresses.windowFocusPauseAddress, 0xEB);
+            }
+
             IsFullyLoaded = true;
             if (Loaded != null)
             {
@@ -207,9 +244,9 @@ namespace Lotd
         public void SelectUserDeck(int deckIndex, bool forceEnterDeckEditScreen)
         {
             // See deckEditApplyCardFilter.c
-            IntPtr popcornCore = ReadValue<IntPtr>(popcornCoreDataAddress);
-            popcornCore = ReadValue<IntPtr>(popcornCore + 472);
-            IntPtr deckEditBaseAddress = ReadValue<IntPtr>(popcornCore + 608);
+            IntPtr popcornCore = ReadValue<IntPtr>(addresses.popcornCoreDataAddress);
+            popcornCore = ReadValue<IntPtr>(popcornCore + addresses.popcornCoreOffset);
+            IntPtr deckEditBaseAddress = ReadValue<IntPtr>(popcornCore + addresses.deckEditBaseOffset);
 
             if (forceEnterDeckEditScreen)
             {
@@ -219,7 +256,7 @@ namespace Lotd
                     // Set the return screen state for the deck editor so that the back button works correctly
                     // (otherwise the user would get stuck in the deck edit screen)
                     // See sub_1406939D0 for this +44 offset
-                    WriteValue(deckEditBaseAddress + 44, (int)ScreenState.MainMenu);
+                    WriteValue(deckEditBaseAddress + addresses.deckEditReturnScreenStateOffset, (int)ScreenState.MainMenu);
 
                     SetScreenState(ScreenState.DeckEdit);
                     Stopwatch stopwatch = new Stopwatch();
@@ -243,7 +280,7 @@ namespace Lotd
             }
 
             // See deckEditHoverUserDeck.c
-            IntPtr deckEditUserDecksAddress = deckEditBaseAddress + 5424 + 376 + 232;            
+            IntPtr deckEditUserDecksAddress = deckEditBaseAddress + addresses.deckEditUserDecksOffset;            
             IntPtr deckEditUserDecksScrollIndexAddress = deckEditUserDecksAddress + 8;
             // +0 has the current selected index
 
@@ -268,10 +305,10 @@ namespace Lotd
         public void SetDeckEditTrunkCards(short[] cardIds, int numTotalCards)
         {
             // See deckEditApplyCardFilter.c
-            IntPtr popcornCore = ReadValue<IntPtr>(popcornCoreDataAddress);
-            popcornCore = ReadValue<IntPtr>(popcornCore + 472);
-            IntPtr deckEditBaseAddress = ReadValue<IntPtr>(popcornCore + 608);
-            IntPtr deckEditTrunkAddress = deckEditBaseAddress + 9040 + 728;
+            IntPtr popcornCore = ReadValue<IntPtr>(addresses.popcornCoreDataAddress);
+            popcornCore = ReadValue<IntPtr>(popcornCore + addresses.popcornCoreOffset);
+            IntPtr deckEditBaseAddress = ReadValue<IntPtr>(popcornCore + addresses.deckEditBaseOffset);
+            IntPtr deckEditTrunkAddress = deckEditBaseAddress + addresses.deckEditTrunkOffset;
 
             // Make sure we are in the deck editor
             if (GetScreenState() != ScreenState.DeckEdit)
@@ -279,7 +316,7 @@ namespace Lotd
                 // Set the return screen state for the deck editor so that the back button works correctly
                 // (otherwise the user would get stuck in the deck edit screen)
                 // See sub_1406939D0 for this +44 offset
-                WriteValue(deckEditBaseAddress + 44, (int)ScreenState.MainMenu);
+                WriteValue(deckEditBaseAddress + addresses.deckEditReturnScreenStateOffset, (int)ScreenState.MainMenu);
 
                 SetScreenState(ScreenState.DeckEdit);
                 Stopwatch stopwatch = new Stopwatch();
@@ -307,7 +344,7 @@ namespace Lotd
 
             if (numTotalCards < 0)
             {
-                numTotalCards = ReadValue<int>(deckEditTrunkAddress + 504);
+                numTotalCards = ReadValue<int>(deckEditTrunkAddress + addresses.deckEditCardCountOffset);
             }
 
             DeckEditFilterCards filterCards = new DeckEditFilterCards();
@@ -323,7 +360,7 @@ namespace Lotd
             CardState[] cardStates = ReadActualOwnedCardList();
             if (manager != null && cardStates != null)
             {
-                IntPtr cardsPtr = ReadValue<IntPtr>(deckEditTrunkAddress + 512);
+                IntPtr cardsPtr = ReadValue<IntPtr>(deckEditTrunkAddress + addresses.deckEditCardsOffset);
                 for (int i = 0; i < cardIds.Length; i++)
                 {
                     FileFormats.CardInfo card;
@@ -343,12 +380,12 @@ namespace Lotd
         /// </summary>
         public short[] GetDeckEditTrunkCards()
         {
-            IntPtr popcornCore = ReadValue<IntPtr>(popcornCoreDataAddress);
-            popcornCore = ReadValue<IntPtr>(popcornCore + 472);
-            IntPtr deckEditAddress = ReadValue<IntPtr>(popcornCore + 608) + 9040 + 728;
+            IntPtr popcornCore = ReadValue<IntPtr>(addresses.popcornCoreDataAddress);
+            popcornCore = ReadValue<IntPtr>(popcornCore + addresses.popcornCoreOffset);
+            IntPtr deckEditAddress = ReadValue<IntPtr>(popcornCore + addresses.deckEditBaseOffset) + addresses.deckEditTrunkOffset;
 
-            int numFilteredCards = ReadValue<int>(deckEditAddress + 500);
-            IntPtr cardsPtr = ReadValue<IntPtr>(deckEditAddress + 512);
+            int numFilteredCards = ReadValue<int>(deckEditAddress + addresses.deckEditFilteredCardCountOffset);
+            IntPtr cardsPtr = ReadValue<IntPtr>(deckEditAddress + addresses.deckEditCardsOffset);
 
             if (numFilteredCards > Constants.NumCards)
             {
@@ -405,8 +442,8 @@ namespace Lotd
 
             // This sets card ids for the visual of revealing the cards (seperate address to the actual
             // cards which are browsable once the reveal is complete)
-            IntPtr shopPtr = ReadValue<IntPtr>(cardShopAddress);
-            IntPtr revealedCardIdsPtrOffset = shopPtr + 4280;
+            IntPtr shopPtr = ReadValue<IntPtr>(addresses.cardShopAddress);
+            IntPtr revealedCardIdsPtrOffset = shopPtr + addresses.cardShopRevealedCardIdsOffset;
             if (ReadValue<IntPtr>(revealedCardIdsPtrOffset) == IntPtr.Zero)
             {
                 // This should do a resize on the std::vector for the card shop cards address
@@ -426,7 +463,7 @@ namespace Lotd
             // Set the return screen state so that the back button works correctly
             // (otherwise the user would get stuck in the card shop screen)
             // See cardShopOpenPack.c sub_1406529C0 / sub_140651D00
-            WriteValue<int>(shopPtr + 44, (int)ScreenState.MainMenu);
+            WriteValue<int>(shopPtr + addresses.deckEditReturnScreenStateOffset, (int)ScreenState.MainMenu);
 
             // Unlock the cards
             foreach (short cardId in cardIds)
@@ -461,8 +498,8 @@ namespace Lotd
         /// </summary>
         public bool IsOpeningPack()
         {
-            IntPtr shopPtr = ReadValue<IntPtr>(cardShopAddress);
-            return ReadValue<int>(shopPtr + 4272) == 3;
+            IntPtr shopPtr = ReadValue<IntPtr>(addresses.cardShopAddress);
+            return ReadValue<int>(shopPtr + addresses.cardShopIsOpeningPackOffset) == 3;
         }
 
         /// <summary>
@@ -481,7 +518,7 @@ namespace Lotd
         /// </summary>
         public int GetTurnCount()
         {
-            return ReadValue<int>(turnCountAddress) + 1;
+            return ReadValue<int>(addresses.turnCountAddress) + 1;
         }
 
         /// <summary>
@@ -489,7 +526,7 @@ namespace Lotd
         /// </summary>
         public Player GetActivePlayer()
         {
-            return (Player)ReadValue<int>(playerTurnAddress);
+            return (Player)ReadValue<int>(addresses.playerTurnAddress);
         }
 
         /// <summary>
@@ -497,12 +534,12 @@ namespace Lotd
         /// </summary>
         public YdcDeck[] ReadUserDecks()
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress == IntPtr.Zero)
             {
                 return null;
             }
-            return ReadValues<YdcDeck>(saveDataAddress + GameSaveData.DecksOffset, Constants.NumUserDecks);
+            return ReadValues<YdcDeck>(saveDataAddress + GameSaveData.GetDecksOffset(Version), Constants.NumUserDecks);
         }
 
         /// <summary>
@@ -510,10 +547,10 @@ namespace Lotd
         /// </summary>
         public void WriteUserDecks(YdcDeck[] decks)
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress != IntPtr.Zero)
             {
-                WriteValues(saveDataAddress + GameSaveData.DecksOffset, decks);
+                WriteValues(saveDataAddress + GameSaveData.GetDecksOffset(Version), decks);
                 MarkSaveDataDirty();
             }
         }
@@ -525,7 +562,7 @@ namespace Lotd
         {
             // Sets the first default structure deck index to 0 which will hide the default cards from those decks
             // in the deck editor (the actual decks should still be visible in the deck editor / elsewhere)
-            WriteValue<int>(defaultStructureDeckCardsAddress, 0);
+            WriteValue<int>(addresses.defaultStructureDeckCardsAddress, 0);
         }
 
         /// <summary>
@@ -535,7 +572,7 @@ namespace Lotd
         /// </summary>
         private CardState[] ReadDeckEditorOwnedCardsList()
         {
-            IntPtr saveDataAddress = GetDeckEditorOwnedCardListAddress();
+            IntPtr saveDataAddress = addresses.GetDeckEditorOwnedCardListAddress();
             if (saveDataAddress == IntPtr.Zero)
             {
                 return null;
@@ -586,7 +623,7 @@ namespace Lotd
             {
                 for (int i = 0; i < int.MaxValue; i++)
                 {
-                    int deckOffset = ReadValue<int>(defaultStructureDeckCardsAddress + (i * 4));
+                    int deckOffset = ReadValue<int>(addresses.defaultStructureDeckCardsAddress + (i * 4));
                     if (deckOffset <= 0)
                     {
                         break;
@@ -632,12 +669,12 @@ namespace Lotd
         /// </summary>
         public CardState[] ReadOwnedCardsList()
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress == IntPtr.Zero)
             {
                 return null;
             }
-            return ReadValues<CardState>(saveDataAddress + GameSaveData.CardListOffset, Constants.NumCards);
+            return ReadValues<CardState>(saveDataAddress + GameSaveData.GetCardListOffset(Version), Constants.NumCards);
         }
 
         /// <summary>
@@ -653,10 +690,10 @@ namespace Lotd
         /// </summary>
         public void WriteOwnedCardsList(CardState[] cards, bool save)
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress != IntPtr.Zero)
             {
-                WriteValues(saveDataAddress + GameSaveData.CardListOffset, cards);
+                WriteValues(saveDataAddress + GameSaveData.GetCardListOffset(Version), cards);
                 if (save)
                 {
                     MarkSaveDataDirty();
@@ -698,10 +735,10 @@ namespace Lotd
         /// </summary>
         private IntPtr GetSaveDataRecipesAddress()
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress != IntPtr.Zero)
             {
-                saveDataAddress += GameSaveData.MiscDataOffset + 16 + 4 + 36 + (4 * Constants.NumDeckDataSlots);
+                saveDataAddress += GameSaveData.GetMiscDataOffset(Version) + 16 + 8 + 32 + (4 * Constants.GetNumDeckDataSlots(Version));
             }
             return saveDataAddress;
         }
@@ -711,13 +748,13 @@ namespace Lotd
         /// </summary>
         public bool[] ReadUnlockedRecipes()
         {
-            bool[] result = new bool[Constants.NumDeckDataSlots];
+            bool[] result = new bool[Constants.GetNumDeckDataSlots(Version)];
 
             IntPtr recipesAddress = GetSaveDataRecipesAddress();
             if (recipesAddress != IntPtr.Zero)
             {
-                byte[] unlockedRecipesBuffer = ReadBytes(recipesAddress, 60);
-                for (int i = 0; i < Constants.NumDeckDataSlots; i++)
+                byte[] unlockedRecipesBuffer = ReadBytes(recipesAddress, MiscSaveData.GetRecipeBufferBytes(Version));
+                for (int i = 0; i < Constants.GetNumDeckDataSlots(Version); i++)
                 {
                     int byteIndex = i / 8;
                     int bitIndex = i % 8;
@@ -736,8 +773,8 @@ namespace Lotd
             IntPtr recipesAddress = GetSaveDataRecipesAddress();
             if (recipesAddress != IntPtr.Zero)
             {
-                byte[] recipesData = new byte[60];
-                for (int i = 0; i < recipes.Length && i < Constants.NumDeckDataSlots; i++)
+                byte[] recipesData = new byte[MiscSaveData.GetRecipeBufferBytes(Version)];
+                for (int i = 0; i < recipes.Length && i < Constants.GetNumDeckDataSlots(Version); i++)
                 {
                     int byteIndex = i / 8;
                     int bitIndex = i % 8;
@@ -755,7 +792,7 @@ namespace Lotd
         /// </summary>
         private void SetAllRecipesComplete(bool complete)
         {
-            bool[] recipes = new bool[Constants.NumDeckDataSlots];
+            bool[] recipes = new bool[Constants.GetNumDeckDataSlots(Version)];
             for (int i = 0; i < recipes.Length; i++)
             {
                 recipes[i] = complete;
@@ -784,10 +821,10 @@ namespace Lotd
         /// </summary>
         private IntPtr GetDuelPointsAddress()
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress != IntPtr.Zero)
             {
-                saveDataAddress += GameSaveData.MiscDataOffset + 16;
+                saveDataAddress += GameSaveData.GetMiscDataOffset(Version) + 16;
             }
             return saveDataAddress;
         }
@@ -822,10 +859,10 @@ namespace Lotd
         /// </summary>
         public byte[] ReadSaveData()
         {
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress != IntPtr.Zero)
             {
-                byte[] buffer = new byte[GameSaveData.FileLength];
+                byte[] buffer = new byte[GameSaveData.GetFileLength(Version)];
                 IntPtr readBytes;
                 ReadProcessMemoryEx(ProcessHandle, saveDataAddress, buffer, (IntPtr)buffer.Length, out readBytes);
                 return buffer;
@@ -838,9 +875,9 @@ namespace Lotd
         /// </summary>
         public void WriteSaveData(byte[] saveData)
         {
-            Debug.Assert(saveData.Length <= GameSaveData.FileLength);
+            Debug.Assert(saveData.Length <= GameSaveData.GetFileLength(Version));
 
-            IntPtr saveDataAddress = GetSaveDataAddress();
+            IntPtr saveDataAddress = addresses.GetSaveDataAddress();
             if (saveDataAddress != IntPtr.Zero)
             {
                 IntPtr writtenBytes;
@@ -859,9 +896,9 @@ namespace Lotd
                 return;
             }
 
-            if (chunk != null && chunk.Length <= GameSaveData.FileLength && chunk.Length >= 0 && chunkOffset <= GameSaveData.FileLength)
+            if (chunk != null && chunk.Length <= GameSaveData.GetFileLength(Version) && chunk.Length >= 0 && chunkOffset <= GameSaveData.GetFileLength(Version))
             {
-                IntPtr saveDataAddress = GetSaveDataAddress();
+                IntPtr saveDataAddress = addresses.GetSaveDataAddress();
                 if (saveDataAddress != IntPtr.Zero)
                 {
                     IntPtr writtenBytes;
@@ -877,12 +914,12 @@ namespace Lotd
         public void MarkSaveDataDirty()
         {
             // This comes from sub_14061F470 - see savegame.c
-            IntPtr address = ReadValue<IntPtr>(saveDataAddress2);
+            IntPtr address = ReadValue<IntPtr>(addresses.saveDataAddress2);
             if (address != IntPtr.Zero)
             {
-                WriteValue<byte>(address + 29068, 0);
-                WriteValue<int>(address + 29064, 1);
-                WriteValue<int>(address + 29232, 2);
+                WriteValue<byte>(address + addresses.dirtySaveDataOffset1, 0);
+                WriteValue<int>(address + addresses.dirtySaveDataOffset2, 1);
+                WriteValue<int>(address + addresses.dirtySaveDataOffset3, 2);
             }
         }
 
@@ -892,11 +929,11 @@ namespace Lotd
         public ScreenState GetScreenState()
         {
             // This comes from sub_14062CFF0 - see screenstate.c
-            IntPtr popcornCore = ReadValue<IntPtr>(popcornCoreDataAddress);
-            popcornCore = ReadValue<IntPtr>(popcornCore + 472);
-            long v1 = ReadValue<long>(popcornCore + 888);
-            int v2 = ReadValue<int>(popcornCore + 884);
-            int screenState = ReadValue<int>(v1 + 48 * v2);
+            IntPtr popcornCore = ReadValue<IntPtr>(addresses.popcornCoreDataAddress);
+            popcornCore = ReadValue<IntPtr>(popcornCore + addresses.popcornCoreOffset);
+            long v1 = ReadValue<long>(popcornCore + addresses.screenStateOffset1);
+            int v2 = ReadValue<int>(popcornCore + addresses.screenStateOffset2);
+            int screenState = ReadValue<int>(v1 + addresses.screenStateOffset3 * v2);
             return (ScreenState)screenState;
         }
 
@@ -947,7 +984,7 @@ namespace Lotd
         /// </summary>
         public void SetHandSizeLimit(int handSizeLimit)
         {
-            WriteValue<int>(handSizeLimitAddress, handSizeLimit);
+            WriteValue<int>(addresses.handSizeLimitAddress, handSizeLimit);
         }
 
         /// <summary>
@@ -973,7 +1010,7 @@ namespace Lotd
             if (duelInfo.FullReload)
             {
                 // Set tutorial duel mode, this will be cleared when the main menu is hit
-                WriteValue<byte>(modeTutorialDuelAddress, 1);
+                WriteValue<byte>(addresses.modeTutorialDuelAddress, 1);
 
                 SetScreenState(ScreenState.MainMenu);
                 ScreenState screenState = GetScreenState();
@@ -988,7 +1025,7 @@ namespace Lotd
 
                     // Wait for screen state to leave duel and for our tutorial duel mode to be cleared
                     screenState = GetScreenState();
-                    if (ReadValue<byte>(modeTutorialDuelAddress) == 0 &&
+                    if (ReadValue<byte>(addresses.modeTutorialDuelAddress) == 0 &&
                         screenState != ScreenState.Duel &&
                         screenState != ScreenState.DuelLoadingScreen &&
                         screenState != ScreenState.DuelResult)
@@ -1010,6 +1047,10 @@ namespace Lotd
             {
                 WriteValue<int>(nativeScriptGlobalsAddress + NativeScript.Globals.OffsetIsNextDuelSpeedDuel, 1);
             }
+            else if (duelInfo.RushDuel)
+            {
+                WriteValue<int>(nativeScriptGlobalsAddress + NativeScript.Globals.OffsetIsNextDuelSpeedDuel, 2);
+            }
 
             if (duelInfo.SpeedDuel && duelInfo.UseSpeedDuelLifePoints)
             {
@@ -1018,15 +1059,15 @@ namespace Lotd
                 duelInfo.LifePoints = Constants.DefaultLifePoints / 2;
             }
 
-            WriteValue<int>(modeTurnTimeLimitEnabledAddress, duelInfo.TurnTimeLimitEnabled ? 1 : 0);
-            WriteValue<long>(modeTurnTimeLimitAddress, duelInfo.TurnTimeLimit);
+            WriteValue<int>(addresses.modeTurnTimeLimitEnabledAddress, duelInfo.TurnTimeLimitEnabled ? 1 : 0);
+            WriteValue<long>(addresses.modeTurnTimeLimitAddress, duelInfo.TurnTimeLimit);
 
-            WriteValue<byte>(modeAIModeAddress, (byte)duelInfo.AIMode);
-            WriteValue<int>(modeStartingLifePointsAddress, duelInfo.LifePoints);
-            WriteValue<byte>(modeMatchDuelAddress, (byte)(duelInfo.Match ? 1 : 0));
-            WriteValue<byte>(modeTagDuelAddress, (byte)(duelInfo.TagDuel ? 1 : 0));
-            WriteValue<byte>(modeInstantStartDuelAddress, (byte)(duelInfo.SkipRockPaperScissors ? 1 : 0));
-            WriteValue<byte>(modeTestOptionAddress, (byte)duelInfo.TestOption);//long/qword?
+            WriteValue<byte>(addresses.modeAIModeAddress, (byte)duelInfo.AIMode);
+            WriteValue<int>(addresses.modeStartingLifePointsAddress, duelInfo.LifePoints);
+            WriteValue<byte>(addresses.modeMatchDuelAddress, (byte)(duelInfo.Match ? 1 : 0));
+            WriteValue<byte>(addresses.modeTagDuelAddress, (byte)(duelInfo.TagDuel ? 1 : 0));
+            WriteValue<byte>(addresses.modeInstantStartDuelAddress, (byte)(duelInfo.SkipRockPaperScissors ? 1 : 0));
+            WriteValue<byte>(addresses.modeTestOptionAddress, (byte)duelInfo.TestOption);//long/qword?
 
             bool tutorialDuel = false;
             bool campaignDuel = false;
@@ -1047,47 +1088,52 @@ namespace Lotd
                     challengeDuel = true;
                     break;
             }
-            WriteValue<byte>(modeTutorialDuelAddress, (byte)(tutorialDuel ? 1 : 0));
-            WriteValue<byte>(modeTutorialDuelIndexAddress, (byte)duelInfo.TutorialDuelIndex);
+            WriteValue<byte>(addresses.modeTutorialDuelAddress, (byte)(tutorialDuel ? 1 : 0));
+            WriteValue<byte>(addresses.modeTutorialDuelIndexAddress, (byte)duelInfo.TutorialDuelIndex);
 
-            WriteValue<byte>(modeCampaignDuelAddress, (byte)(campaignDuel ? 1 : 0));
-            WriteValue<int>(modeCampaignDuelIndexAddress, duelInfo.CampaignDuelIndex);
-            WriteValue<int>(modeCampaignDuelDeckIndexAddress, duelInfo.CampaignDuelDeckIndex);
+            WriteValue<byte>(addresses.modeCampaignDuelAddress, (byte)(campaignDuel ? 1 : 0));
+            WriteValue<int>(addresses.modeCampaignDuelIndexAddress, duelInfo.CampaignDuelIndex);
+            WriteValue<int>(addresses.modeCampaignDuelDeckIndexAddress, duelInfo.CampaignDuelDeckIndex);
 
-            WriteValue<byte>(modeBattlePackDuelAddress, (byte)(battlePackDuel ? 1 : 0));
-            WriteValue<int>(modeBattlePackDuelAddress, duelInfo.BattlePackIndex);
+            WriteValue<byte>(addresses.modeBattlePackDuelAddress, (byte)(battlePackDuel ? 1 : 0));
+            WriteValue<int>(addresses.modeBattlePackDuelAddress, duelInfo.BattlePackIndex);
 
-            WriteValue<byte>(modeChallengeDuelAddress, (byte)(challengeDuel ? 1 : 0));
+            WriteValue<byte>(addresses.modeChallengeDuelAddress, (byte)(challengeDuel ? 1 : 0));
+
+            if (addresses.modeMasterRules != IntPtr.Zero)
+            {
+                WriteValue<byte>(addresses.modeChallengeDuelAddress, (byte)(duelInfo.MasterRules5 ? 1 : 0));
+            }
 
             // Set the controllers for each player (AI / player)
-            WriteValue<int>(modePlayerControllerAddress + (4 * GetPlayerIndex(Player.Self)), (int)duelInfo.GetController(Player.Self));
-            WriteValue<int>(modePlayerControllerAddress + (4 * GetPlayerIndex(Player.Opponent)), (int)duelInfo.GetController(Player.Opponent));
-            WriteValue<int>(modePlayerControllerAddress + (4 * GetPlayerIndex(Player.TagSelf)), (int)duelInfo.GetController(Player.TagSelf));
-            WriteValue<int>(modePlayerControllerAddress + (4 * GetPlayerIndex(Player.TagOpponent)), (int)duelInfo.GetController(Player.TagOpponent));
+            WriteValue<int>(addresses.modePlayerControllerAddress + (4 * GetPlayerIndex(Player.Self)), (int)duelInfo.GetController(Player.Self));
+            WriteValue<int>(addresses.modePlayerControllerAddress + (4 * GetPlayerIndex(Player.Opponent)), (int)duelInfo.GetController(Player.Opponent));
+            WriteValue<int>(addresses.modePlayerControllerAddress + (4 * GetPlayerIndex(Player.TagSelf)), (int)duelInfo.GetController(Player.TagSelf));
+            WriteValue<int>(addresses.modePlayerControllerAddress + (4 * GetPlayerIndex(Player.TagOpponent)), (int)duelInfo.GetController(Player.TagOpponent));
 
             // Set the player deck ids (player ids are 0-32, ydc are 33+)
-            WriteValue(playerDeckIdAddress + (4 * GetPlayerIndex(Player.Self)), duelInfo.GetDeckId(Player.Self));
-            WriteValue(playerDeckIdAddress + (4 * GetPlayerIndex(Player.Opponent)), duelInfo.GetDeckId(Player.Opponent));
-            WriteValue(playerDeckIdAddress + (4 * GetPlayerIndex(Player.TagSelf)), duelInfo.GetDeckId(Player.TagSelf));
-            WriteValue(playerDeckIdAddress + (4 * GetPlayerIndex(Player.TagOpponent)), duelInfo.GetDeckId(Player.TagOpponent));
+            WriteValue(addresses.playerDeckIdAddress + (4 * GetPlayerIndex(Player.Self)), duelInfo.GetDeckId(Player.Self));
+            WriteValue(addresses.playerDeckIdAddress + (4 * GetPlayerIndex(Player.Opponent)), duelInfo.GetDeckId(Player.Opponent));
+            WriteValue(addresses.playerDeckIdAddress + (4 * GetPlayerIndex(Player.TagSelf)), duelInfo.GetDeckId(Player.TagSelf));
+            WriteValue(addresses.playerDeckIdAddress + (4 * GetPlayerIndex(Player.TagOpponent)), duelInfo.GetDeckId(Player.TagOpponent));
 
             // Set the player avatar ids
-            WriteValue(playerAvatarIdAddress + (4 * GetPlayerIndex(Player.Self)), duelInfo.GetAvatarId(Player.Self));
-            WriteValue(playerAvatarIdAddress + (4 * GetPlayerIndex(Player.Opponent)), duelInfo.GetAvatarId(Player.Opponent));
-            WriteValue(playerAvatarIdAddress + (4 * GetPlayerIndex(Player.TagSelf)), duelInfo.GetAvatarId(Player.TagSelf));
-            WriteValue(playerAvatarIdAddress + (4 * GetPlayerIndex(Player.TagOpponent)), duelInfo.GetAvatarId(Player.TagOpponent));
+            WriteValue(addresses.playerAvatarIdAddress + (4 * GetPlayerIndex(Player.Self)), duelInfo.GetAvatarId(Player.Self));
+            WriteValue(addresses.playerAvatarIdAddress + (4 * GetPlayerIndex(Player.Opponent)), duelInfo.GetAvatarId(Player.Opponent));
+            WriteValue(addresses.playerAvatarIdAddress + (4 * GetPlayerIndex(Player.TagSelf)), duelInfo.GetAvatarId(Player.TagSelf));
+            WriteValue(addresses.playerAvatarIdAddress + (4 * GetPlayerIndex(Player.TagOpponent)), duelInfo.GetAvatarId(Player.TagOpponent));
 
             // Set the duel arena id
-            WriteValue(duelArenaAddress, (int)duelInfo.Arena);
+            WriteValue(addresses.duelArenaAddress, (int)duelInfo.Arena);
 
             // Set the starting player for the duel
-            WriteValue(modeStartingPlayerAddress, GetPlayerIndex(duelInfo.StartingPlayer));
+            WriteValue(addresses.modeStartingPlayerAddress, GetPlayerIndex(duelInfo.StartingPlayer));
 
             if (CallNativeScriptFunction("LoadDuel") == CallNativeFunctionResult.Success)
             {
                 // Some settings must be written after loading the duel as they are reset in the LoadDuel call
 
-                WriteValue<byte>(modeAIModeAddress, (byte)duelInfo.AIMode);
+                WriteValue<byte>(addresses.modeAIModeAddress, (byte)duelInfo.AIMode);
 
                 // Set the screen state to the duel screen state (starts the duel / rock paper scissors)
                 SetScreenState(ScreenState.Duel);
@@ -1105,7 +1151,7 @@ namespace Lotd
         /// </summary>
         public DuelArena GetDuelArena()
         {
-            return (DuelArena)ReadValue<int>(duelArenaAddress);
+            return (DuelArena)ReadValue<int>(addresses.duelArenaAddress);
         }
 
         /// <summary>
@@ -1131,15 +1177,15 @@ namespace Lotd
         /// </summary>
         private void GetHoveredSlotInfo(out int playerIndex, out int slotIndex, out int slotSubIndex, out int cardId, bool includeHiddenCards)
         {
-            IntPtr coreDuelData = ReadValue<IntPtr>(coreDuelDataAddress);
+            IntPtr coreDuelData = ReadValue<IntPtr>(addresses.coreDuelDataAddress);
 
             // See "YGOPopcornCore_cardhover.c" sub_140876690 / sub_14089BFC0  for these offsets
-            int offset = 252 * ReadValue<byte>(coreDuelData + 9176);
-            IntPtr cursorCardDataPtr = (coreDuelData + 6384) + offset + 48;
+            int offset = addresses.hoveredCardOffset1 * ReadValue<byte>(coreDuelData + addresses.hoveredCardOffset2);
+            IntPtr cursorCardDataPtr = (coreDuelData + addresses.hoveredCardOffset3) + offset + addresses.hoveredCardOffset4;
 
             cardId = ReadValue<short>(cursorCardDataPtr);
 
-            ushort slotInfo = ReadValue<ushort>(cursorCardDataPtr + 240);
+            ushort slotInfo = ReadValue<ushort>(cursorCardDataPtr + 240);// TODO: UPDATE!
             playerIndex = slotInfo & 1;
             slotIndex = (slotInfo >> 1) & 0x1F;
             slotSubIndex = slotInfo >> 6;
@@ -1303,7 +1349,7 @@ namespace Lotd
         /// </summary>
         public void SetMinimumDuelLoadingScreenTime(double seconds)
         {
-            WriteValue(duelLoadingScreenDelayAddress, seconds);
+            WriteValue(addresses.duelLoadingScreenDelayAddress, seconds);
         }
 
         /// <summary>
@@ -1311,7 +1357,7 @@ namespace Lotd
         /// </summary>
         public DuelPlayerInfo ReadPlayerInfo(Player player)
         {
-            IntPtr address = duelPlayerInfoAddress + (GetPlayerIndex(player) * Marshal.SizeOf(typeof(DuelPlayerInfo)));
+            IntPtr address = addresses.duelPlayerInfoAddress + (GetPlayerIndex(player) * Marshal.SizeOf(typeof(DuelPlayerInfo)));
             return ReadValue<DuelPlayerInfo>(address);
         }
 
@@ -1320,7 +1366,7 @@ namespace Lotd
         /// </summary>
         public void WritePlayerInfo(Player playerTarget, DuelPlayerInfo player)
         {
-            IntPtr address = duelPlayerInfoAddress + (GetPlayerIndex(playerTarget) * Marshal.SizeOf(typeof(DuelPlayerInfo)));
+            IntPtr address = addresses.duelPlayerInfoAddress + (GetPlayerIndex(playerTarget) * Marshal.SizeOf(typeof(DuelPlayerInfo)));
             WriteValue(address, player);
         }
 
@@ -1346,7 +1392,7 @@ namespace Lotd
         /// </summary>
         public YdcDeck[] ReadYdcDecks()
         {
-            YdcDeck[] decks = ReadValues<YdcDeck>(ydcDecksAddress, Constants.NumDeckDataSlots);
+            YdcDeck[] decks = ReadValues<YdcDeck>(addresses.ydcDecksAddress, Constants.NumDeckDataSlots);
             CheckDecksForUnknownData(decks);
             return decks;
         }
@@ -1356,7 +1402,7 @@ namespace Lotd
         /// </summary>
         public void WriteYdcDecks(YdcDeck[] decks)
         {
-            WriteValues(ydcDecksAddress, decks);
+            WriteValues(addresses.ydcDecksAddress, decks);
         }
 
         /// <summary>
@@ -1385,7 +1431,7 @@ namespace Lotd
         /// <returns></returns>
         public CardProps[] ReadCardProps()
         {
-            return ReadValues<CardProps>(cardPropsBinAddress, Constants.MaxCardId + 1);
+            return ReadValues<CardProps>(addresses.cardPropsBinAddress, Constants.MaxCardId + 1);
         }
 
         /// <summary>
@@ -1394,7 +1440,7 @@ namespace Lotd
         public void WriteCardProps(CardProps[] cardProps)
         {
             Debug.Assert(cardProps.Length <= Constants.MaxCardId + 1);
-            WriteValues(cardPropsBinAddress, cardProps);
+            WriteValues(addresses.cardPropsBinAddress, cardProps);
         }
 
         /// <summary>
@@ -1407,7 +1453,7 @@ namespace Lotd
             packName = packName.ToLower();
 
             List<CardCollection> result = new List<CardCollection>();
-            RawPackDefData[] dataArray = ReadValues<RawPackDefData>(packDefDataBinAddress, 128);
+            RawPackDefData[] dataArray = ReadValues<RawPackDefData>(addresses.packDefDataBinAddress, 128);
             for (int i = 0; i < dataArray.Length; i++)
             {
                 RawPackDefData data = dataArray[i];
@@ -1462,7 +1508,7 @@ namespace Lotd
                 throw new Exception("Battle pack too large. Size: " + expectedLen + " limit: " + customBattlePackMaxDataLen);
             }
 
-            RawPackDefData[] dataArray = ReadValues<RawPackDefData>(packDefDataBinAddress, 128);
+            RawPackDefData[] dataArray = ReadValues<RawPackDefData>(addresses.packDefDataBinAddress, 128);
             for (int i = 0; i < dataArray.Length; i++)
             {
                 RawPackDefData data = dataArray[i];
@@ -1512,7 +1558,7 @@ namespace Lotd
                     }
 
                     data.BattlePackData = address;
-                    WriteValue(packDefDataBinAddress + (i * Marshal.SizeOf(typeof(RawPackDefData))), data);
+                    WriteValue(addresses.packDefDataBinAddress + (i * Marshal.SizeOf(typeof(RawPackDefData))), data);
                 }
             }
         }
@@ -1523,7 +1569,7 @@ namespace Lotd
         public string[] GetBattlePackNames()
         {
             List<string> result = new List<string>();
-            RawPackDefData[] dataArray = ReadValues<RawPackDefData>(packDefDataBinAddress, 128);
+            RawPackDefData[] dataArray = ReadValues<RawPackDefData>(addresses.packDefDataBinAddress, 128);
             for (int i = 0; i < dataArray.Length; i++)
             {
                 RawPackDefData data = dataArray[i];
@@ -1540,13 +1586,13 @@ namespace Lotd
         /// </summary>
         public FileFormats.CardGenre[] ReadCardGenres()
         {
-            long dataLen = ReadValue<long>(cardGenreBinAddress);
-            IntPtr dataAddress = ReadValue<IntPtr>(cardGenreBinAddress + 8);
+            long dataLen = ReadValue<long>(addresses.cardGenreBinAddress);
+            IntPtr dataAddress = ReadValue<IntPtr>(addresses.cardGenreBinAddress + 8);
 
             // Should be 8 bytes for each card
-            Debug.Assert(dataLen == Constants.NumCards * 8);
+            Debug.Assert(dataLen == Constants.GetNumCards(Version) * 8);
 
-            FileFormats.CardGenre[] cardGenres = new FileFormats.CardGenre[Constants.NumCards];
+            FileFormats.CardGenre[] cardGenres = new FileFormats.CardGenre[Constants.GetNumCards(Version)];
             for (int i = 0; i < cardGenres.Length; i++)
             {
                 cardGenres[i] = (FileFormats.CardGenre)ReadValue<ulong>(dataAddress + (i * 8));
@@ -1560,9 +1606,9 @@ namespace Lotd
         /// </summary>
         public void WriteCardGenres(FileFormats.CardGenre[] cardGenres)
         {
-            IntPtr dataAddress = ReadValue<IntPtr>(cardGenreBinAddress + 8);
+            IntPtr dataAddress = ReadValue<IntPtr>(addresses.cardGenreBinAddress + 8);
 
-            for (int i = 0; i < Constants.NumCards && i < cardGenres.Length; i++)
+            for (int i = 0; i < Constants.GetNumCards(Version) && i < cardGenres.Length; i++)
             {
                 WriteValue<long>(dataAddress + (i * 8), (long)cardGenres[i]);
             }
@@ -1576,7 +1622,7 @@ namespace Lotd
             ////////////////////////////////////////////////////////////////
             // Unlock chardata_X.bin dlc (challenge duels)
             ////////////////////////////////////////////////////////////////
-            IntPtr ptr = chardataBinAddress;
+            IntPtr ptr = addresses.chardataBinAddress;
 
             // Number of items should be here, if not fall back to 151
             int defaultNumItems = 151;
@@ -1601,7 +1647,7 @@ namespace Lotd
             ////////////////////////////////////////////////////////////////
             // Unlock dueldata_X.bin dlc (campaign duels / decks)
             ////////////////////////////////////////////////////////////////
-            ptr = dueldataBinAddress;
+            ptr = addresses.dueldataBinAddress;
 
             // Number of items should be here, if not fall back to 140
             defaultNumItems = 140;

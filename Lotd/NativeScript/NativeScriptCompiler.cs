@@ -31,9 +31,10 @@ namespace Lotd
     /// </summary>
     class NativeScriptCompiler
     {
-        private static string scriptFileDirName = "NativeScript";
-        private static string scriptFileName = "NativeScript.c";
-        private static string outputFileName = "NativeScript.Generated.cs";
+        private const string scriptFileDirName = "NativeScript";
+        private const string scriptFileName = "NativeScript.c";
+        private const string outputFileName = "NativeScript.Generated.cs";
+        private const string scriptReplaceStr = "//REPLACE_ME_WITH_VERSION_SPECIFIC_VALUES";
 
         private static string GetScriptPath()
         {
@@ -75,152 +76,173 @@ namespace Lotd
 
         public static void CompileIfChanged()
         {
-            if (NativeScript.ScriptHash != GetScriptHash())
+            foreach (GameVersion version in Enum.GetValues(typeof(GameVersion)))
             {
-                Compile();
+                CompileIfChanged(version);
             }
         }
 
-        public static void Compile()
+        public static void CompileIfChanged(GameVersion version)
         {
-            Compile(false);
+            if (NativeScript.Scripts[version].ScriptHash != GetScriptHash())
+            {
+                Compile(version);
+            }
         }
 
-        public static void Compile(bool optimize)
+        public static void Compile(GameVersion version)
+        {
+            Compile(version, false);
+        }
+
+        public static void Compile(GameVersion version, bool optimize)
         {
             string scriptPath = GetScriptPath();
-            if (!string.IsNullOrEmpty(scriptPath) && File.Exists(scriptPath))
+            if (string.IsNullOrEmpty(scriptPath) || !File.Exists(scriptPath))
             {
-                string[] lines = File.ReadAllLines(scriptPath);
+                return;
+            }
 
-                if (lines.Length < 2)
+            string versionScriptPath = Path.ChangeExtension(scriptPath, NativeScript.GetVersionName(version) + ".c");
+            if (string.IsNullOrEmpty(versionScriptPath) || !File.Exists(versionScriptPath))
+            {
+                return;
+            }
+
+            string text = File.ReadAllText(scriptPath);
+            text = text.Replace(scriptReplaceStr, File.ReadAllText(versionScriptPath));
+            string tempScriptPath = Path.ChangeExtension(scriptPath, "temp.c");
+            File.WriteAllText(tempScriptPath, text);
+
+            string[] lines = text.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (lines.Length < 2)
+            {
+                return;
+            }
+
+            string compiler = lines[0].Trim('/', ' ');
+            string dumpbin = lines[1].Trim('/', ' ');
+
+            if (string.IsNullOrEmpty(compiler) || string.IsNullOrEmpty(dumpbin))
+            {
+                return;
+            }
+
+            if (!File.Exists(compiler))
+            {
+                compiler = Path.Combine(Path.GetDirectoryName(scriptPath), compiler);
+            }
+
+            if (!File.Exists(dumpbin))
+            {
+                dumpbin = Path.Combine(Path.GetDirectoryName(scriptPath), dumpbin);
+            }
+
+            if (!File.Exists(compiler) || !File.Exists(dumpbin))
+            {
+                return;
+            }
+
+            string scriptDir = Path.GetDirectoryName(scriptPath);
+            string objPath = Path.ChangeExtension(tempScriptPath, ".obj");
+
+            string additionalArgs = "/GS- ";// disable buffer security check (security cookie stuff)
+            if (optimize)
+            {
+                additionalArgs += "/O2";
+            }
+
+            string compileOutput, compileError;
+            if (RunProcess(compiler, "/c " + additionalArgs + " \"" + tempScriptPath + "\"", scriptDir, out compileOutput, out compileError) &&
+                !compileOutput.Contains("error") && File.Exists(objPath))
+            {
+                // Compile was successful, get the disasm
+
+                string disasmOutput, disasmError;
+                if (RunProcess(dumpbin, "\"" + objPath + "\" /disasm", scriptDir, out disasmOutput, out disasmError) &&
+                    !disasmOutput.Contains("fatal error"))
                 {
-                    return;
-                }
+                    string lastLine = string.Empty;
 
-                string compiler = lines[0].Trim('/', ' ');
-                string dumpbin = lines[1].Trim('/', ' ');
+                    Module module = new Module(version);
+                    Function currentFunction = null;
+                    string instructionStr = string.Empty;
+                    string instructionBytes = string.Empty;
 
-                if (string.IsNullOrEmpty(compiler) || string.IsNullOrEmpty(dumpbin))
-                {
-                    return;
-                }
-
-                if (!File.Exists(compiler))
-                {
-                    compiler = Path.Combine(Path.GetDirectoryName(scriptPath), compiler);
-                }
-
-                if (!File.Exists(dumpbin))
-                {
-                    dumpbin = Path.Combine(Path.GetDirectoryName(scriptPath), dumpbin);
-                }
-
-                if (!File.Exists(compiler) || !File.Exists(dumpbin))
-                {
-                    return;
-                }
-
-                string scriptDir = Path.GetDirectoryName(scriptPath);
-                string objPath = Path.ChangeExtension(scriptPath, ".obj");
-
-                string additionalArgs = "/GS- ";// disable buffer security check (security cookie stuff)
-                if (optimize)
-                {
-                    additionalArgs += "/O2";
-                }
-
-                string compileOutput, compileError;
-                if (RunProcess(compiler, "/c " + additionalArgs + " \"" + scriptPath + "\"", scriptDir, out compileOutput, out compileError) &&
-                    !compileOutput.Contains("error") && File.Exists(objPath))
-                {
-                    // Compile was successful, get the disasm
-
-                    string disasmOutput, disasmError;
-                    if (RunProcess(dumpbin, "\"" + objPath + "\" /disasm", scriptDir, out disasmOutput, out disasmError) &&
-                        !disasmOutput.Contains("fatal error"))
+                    string[] splitted = disasmOutput.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string line in splitted)
                     {
-                        string lastLine = string.Empty;
-
-                        Module module = new Module();
-                        Function currentFunction = null;
-                        string instructionStr = string.Empty;
-                        string instructionBytes = string.Empty;
-
-                        string[] splitted = disasmOutput.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (string line in splitted)
+                        if (line.StartsWith("  0"))
                         {
-                            if (line.StartsWith("  0"))
+                            if (lastLine.EndsWith(":") && !lastLine.StartsWith(" "))
                             {
-                                if (lastLine.EndsWith(":") && !lastLine.StartsWith(" "))
-                                {
-                                    Debug.Assert(currentFunction == null);
-                                    currentFunction = new Function(lastLine.Substring(0, lastLine.Length - 1));
-                                    module.Functions.Add(currentFunction.Name, currentFunction);
-                                }
-
-                                if (!string.IsNullOrEmpty(instructionStr))
-                                {
-                                    currentFunction.AddInstruction(instructionBytes, instructionStr);
-                                }
-
-                                instructionBytes = string.Empty;
-                                instructionStr = string.Empty;
-                                string str = line.Substring(line.IndexOf(':') + 1);
-                                int bytesEnd = str.IndexOf("  ");
-                                instructionBytes = str.Substring(0, bytesEnd).Trim();
-                                instructionStr = str.Substring(bytesEnd).Trim();
-
-                                // Remove additional spacing between the mnemonic and the rest of the instruction
-                                int firstSpace = instructionStr.IndexOf(' ');
-                                while (true)
-                                {
-                                    if (instructionStr[firstSpace + 1] == ' ')
-                                    {
-                                        instructionStr = instructionStr.Remove(firstSpace + 1, 1);
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                            else if (line == "  Summary")
-                            {
-                                break;
-                            }
-                            else if (line.StartsWith(" "))
-                            {
-                                instructionBytes += line.Trim();
-                            }
-                            else
-                            {
-                                if (!string.IsNullOrEmpty(instructionStr) && currentFunction != null)
-                                {
-                                    currentFunction.AddInstruction(instructionBytes, instructionStr);
-                                }
-
-                                currentFunction = null;
-                                instructionBytes = string.Empty;
-                                instructionStr = string.Empty;
+                                Debug.Assert(currentFunction == null);
+                                currentFunction = new Function(lastLine.Substring(0, lastLine.Length - 1));
+                                module.Functions.Add(currentFunction.Name, currentFunction);
                             }
 
-                            lastLine = line;
+                            if (!string.IsNullOrEmpty(instructionStr))
+                            {
+                                currentFunction.AddInstruction(instructionBytes, instructionStr);
+                            }
+
+                            instructionBytes = string.Empty;
+                            instructionStr = string.Empty;
+                            string str = line.Substring(line.IndexOf(':') + 1);
+                            int bytesEnd = str.IndexOf("  ");
+                            instructionBytes = str.Substring(0, bytesEnd).Trim();
+                            instructionStr = str.Substring(bytesEnd).Trim();
+
+                            // Remove additional spacing between the mnemonic and the rest of the instruction
+                            int firstSpace = instructionStr.IndexOf(' ');
+                            while (true)
+                            {
+                                if (instructionStr[firstSpace + 1] == ' ')
+                                {
+                                    instructionStr = instructionStr.Remove(firstSpace + 1, 1);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        else if (line == "  Summary")
+                        {
+                            break;
+                        }
+                        else if (line.StartsWith(" "))
+                        {
+                            instructionBytes += line.Trim();
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(instructionStr) && currentFunction != null)
+                            {
+                                currentFunction.AddInstruction(instructionBytes, instructionStr);
+                            }
+
+                            currentFunction = null;
+                            instructionBytes = string.Empty;
+                            instructionStr = string.Empty;
                         }
 
-                        if (!string.IsNullOrEmpty(instructionStr))
-                        {
-                            currentFunction.AddInstruction(instructionBytes, instructionStr);
-                        }
-
-                        module.Build();
+                        lastLine = line;
                     }
+
+                    if (!string.IsNullOrEmpty(instructionStr))
+                    {
+                        currentFunction.AddInstruction(instructionBytes, instructionStr);
+                    }
+
+                    module.Build();
                 }
-                else
-                {
-                    Debug.WriteLine("Compile failed " + compileOutput);
-                    Debugger.Break();
-                }
+            }
+            else
+            {
+                Debug.WriteLine("Compile failed " + compileOutput);
+                Debugger.Break();
             }
         }
 
@@ -304,8 +326,11 @@ namespace Lotd
 
             public string Code { get; private set; }
 
-            public Module()
+            GameVersion version;
+
+            public Module(GameVersion version)
             {
+                this.version = version;
                 Functions = new Dictionary<string, Function>();
                 FunctionOffsets = new Dictionary<Function, int>();
             }
@@ -369,14 +394,13 @@ namespace Lotd
                 Buffer = buffer.ToArray();
                 Code = GenerateCode();
 
-                string outputFilePath = GetSourceFilePath(outputFileName);
+                string outputFilePath = GetSourceFilePath(Path.ChangeExtension(outputFileName, NativeScript.GetVersionName(version) + ".cs"));
                 if (File.Exists(outputFilePath))
                 {
                     string oldCode = File.ReadAllText(outputFilePath);
                     if (oldCode != Code)
                     {
                         File.WriteAllText(outputFilePath, Code);
-                        Debugger.Break();
                     }
                 }
                 else
@@ -401,19 +425,22 @@ namespace Lotd
                 result.AppendLine("{");
                 result.AppendLine("    partial class NativeScript");
                 result.AppendLine("    {");
-                result.AppendLine("        public const string ScriptHash = \"" + GetScriptHash() + "\";");
-                result.AppendLine("        public const int GlobalsAddressOffset = " + GlobalsAddressOffset + ";");
-                result.AppendLine("        public static Dictionary<string, int> Functions = new Dictionary<string, int>()");
+                result.AppendLine("        public class Script_" + NativeScript.GetVersionName(version) + " : Script");
                 result.AppendLine("        {");
+                result.AppendLine("            public Script_" + NativeScript.GetVersionName(version) + "()");
+                result.AppendLine("            {");
+                result.AppendLine("                ScriptHash = \"" + GetScriptHash() + "\";");
+                result.AppendLine("                GlobalsAddressOffset = " + GlobalsAddressOffset + ";");
+                result.AppendLine("                Functions = new Dictionary<string, int>()");
+                result.AppendLine("                {");
                 foreach (KeyValuePair<Function, int> functionOffset in FunctionOffsets)
                 {
-                    result.AppendLine("            { \"" + functionOffset.Key.Name + "\", " + functionOffset.Value + " },");
+                    result.AppendLine("                    { \"" + functionOffset.Key.Name + "\", " + functionOffset.Value + " },");
                 }
-                result.AppendLine("        };");
-                result.AppendLine();
-                result.AppendLine("        public static byte[] Buffer =");
-                result.AppendLine("        {");
-                result.Append("            ");
+                result.AppendLine("                };");
+                result.AppendLine("                Buffer = new byte[]");
+                result.AppendLine("                {");
+                result.Append("                    ");
                 for (int i = 0; i < Buffer.Length; i++)
                 {
                     result.Append("0x" + Buffer[i].ToString("X2"));
@@ -424,11 +451,13 @@ namespace Lotd
                     if ((i + 1) % 16 == 0)
                     {
                         result.AppendLine();
-                        result.Append("            ");
+                        result.Append("                    ");
                     }
                 }
                 result.AppendLine();
-                result.AppendLine("        };");
+                result.AppendLine("                };");
+                result.AppendLine("            }");
+                result.AppendLine("        }");
                 result.AppendLine("    }");
                 result.AppendLine("}");
                 return result.ToString();

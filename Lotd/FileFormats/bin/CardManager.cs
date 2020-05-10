@@ -55,14 +55,28 @@ namespace Lotd.FileFormats
             Dictionary<Language, byte[]> taginfos = archive.LoadLocalizedBuffer("taginfo_", true);
 
             List<ZibFile> allCardImages = new List<ZibFile>();
-            allCardImages.AddRange(archive.Root.FindFile("cardcropHD400.jpg.zib").LoadData<ZibData>().Files.Values);
-            allCardImages.AddRange(archive.Root.FindFile("cardcropHD401.jpg.zib").LoadData<ZibData>().Files.Values);
+            List<string> imageFiles = new List<string>();
+            switch (Manager.Version)
+            {
+                case GameVersion.Lotd:
+                    imageFiles.Add("cardcropHD400.jpg.zib");
+                    imageFiles.Add("cardcropHD401.jpg.zib");
+                    break;
+                case GameVersion.LinkEvolution2:
+                    imageFiles.Add("2020.full.illust_a.jpg.zib");
+                    imageFiles.Add("2020.full.illust_j.jpg.zib");
+                    break;
+            }
+            foreach (string imageFile in imageFiles)
+            {
+                allCardImages.AddRange(archive.Root.FindFile(imageFile).LoadData<ZibData>().Files.Values);
+            }
 
             Dictionary<short, ZibFile> cardImagesById = new Dictionary<short, ZibFile>();
             foreach (ZibFile file in allCardImages)
             {
                 short cardId = short.Parse(file.FileName.Substring(0, file.FileName.IndexOf('.')));
-                cardImagesById.Add(cardId, file);
+                cardImagesById[cardId] = file;
             }
 
             List<CardInfo> cards = new List<CardInfo>();
@@ -110,8 +124,8 @@ namespace Lotd.FileFormats
                 
                 for (int i = 0; i < numArchetypes; i++)
                 {
-                    int offset = reader.ReadInt16();// The offset of the card into the cards list
-                    int count = reader.ReadInt16();// The number of cards for this name type
+                    int offset = reader.ReadInt16();// The offset of the cards for this named group (starts at 0)
+                    int count = reader.ReadInt16();// The number of cards for this named group
                     HashSet<short> cardIds = new HashSet<short>();
                     cardNameTypes.Add((CardNameType)i, cardIds);
 
@@ -196,7 +210,7 @@ namespace Lotd.FileFormats
                 !Enum.IsDefined(typeof(CardType), cardType) ||
                 !Enum.IsDefined(typeof(CardAttribute), attribute))
             {
-                Debug.Assert(false);
+                //Debug.Assert(false);// TODO: Update for LE
             }
         }
 
@@ -354,7 +368,7 @@ namespace Lotd.FileFormats
                         continue;
                     }
 
-                    Debug.Assert(knownElementTagTypes.Contains(element.Type));
+                    //Debug.Assert(knownElementTagTypes.Contains(element.Type));// TODO: Update for LE
                 }
 
                 if (tag.MainType == CardTagInfo.Type.Exact)
@@ -431,7 +445,7 @@ namespace Lotd.FileFormats
                             CardTagInfo.CardEffectType cardEffect;
                             if (!Enum.TryParse(text, true, out cardEffect))
                             {
-                                Debug.Assert(false);
+                                //Debug.Assert(false);// TODO: Update for LE
                             }
                             tag.CardEffect = cardEffect;
                             break;
@@ -440,7 +454,7 @@ namespace Lotd.FileFormats
                             CardTagInfo.CardEffectType spellEffect;
                             if (!Enum.TryParse("Spell_" + text, true, out spellEffect))
                             {
-                                Debug.Assert(false);
+                                //Debug.Assert(false);// TODO: Update for LE
                             }
                             tag.CardEffect = spellEffect;
                             break;
@@ -808,7 +822,7 @@ namespace Lotd.FileFormats
                 case CardType.AnyTuner: return CardTypeFlags.Any | CardTypeFlags.Tuner;
                 case CardType.AnyXyz: return CardTypeFlags.Any | CardTypeFlags.Xyz;
                 default:
-                    throw new NotImplementedException("Unhandled CardType->CardTypeFlags conversion " + cardType);
+                    return 0;// TODO: Update for LE //throw new NotImplementedException("Unhandled CardType->CardTypeFlags conversion " + cardType);
             }
         }
 

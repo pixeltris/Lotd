@@ -11,6 +11,14 @@ namespace Lotd
     /// </summary>
     public abstract class SaveDataChunk
     {
+        public GameSaveData Owner { get; private set; }
+        public GameVersion Version { get { return Owner.Version; } }
+
+        public SaveDataChunk(GameSaveData owner)
+        {
+            Owner = owner;
+        }
+
         public virtual void Clear()
         {
         }

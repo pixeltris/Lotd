@@ -144,8 +144,8 @@ namespace Lotd
             IntPtr processHandle = ProcessHandle;
 
             // Buffer for the NativeScript code
-            byte[] buffer = new byte[NativeScript.Buffer.Length];
-            Buffer.BlockCopy(NativeScript.Buffer, 0, buffer, 0, buffer.Length);
+            byte[] buffer = new byte[NativeScript.Scripts[Version].Buffer.Length];
+            Buffer.BlockCopy(NativeScript.Scripts[Version].Buffer, 0, buffer, 0, buffer.Length);
 
             IntPtr address = VirtualAllocEx(processHandle, IntPtr.Zero, (IntPtr)buffer.Length,
                 AllocationType.Commit, MemoryProtection.ExecuteReadWrite);
@@ -180,7 +180,7 @@ namespace Lotd
             // Write the globals address to the NativeScript GetGlobals function
             byte[] globalsAddressBuffer = BitConverter.GetBytes(globalsAddress.ToInt64());
             Debug.Assert(globalsAddressBuffer.Length == 8);
-            if (!WriteProcessMemoryEx(processHandle, (IntPtr)(address.ToInt64() + NativeScript.GlobalsAddressOffset), globalsAddressBuffer,
+            if (!WriteProcessMemoryEx(processHandle, (IntPtr)(address.ToInt64() + NativeScript.Scripts[Version].GlobalsAddressOffset), globalsAddressBuffer,
                 (IntPtr)globalsAddressBuffer.Length, out bytesWritten) || bytesWritten.ToInt32() != globalsAddressBuffer.Length)
             {
                 return false;
@@ -342,7 +342,7 @@ namespace Lotd
             }
 
             int functionOffset;
-            if (!NativeScript.Functions.TryGetValue(functionName, out functionOffset))
+            if (!NativeScript.Scripts[Version].Functions.TryGetValue(functionName, out functionOffset))
             {
                 return IntPtr.Zero;
             }

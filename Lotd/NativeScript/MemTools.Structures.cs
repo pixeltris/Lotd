@@ -14,7 +14,7 @@ namespace Lotd
         {
             public int NumFilteredCards;
             public int NumTotalCards;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.NumCards)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.AbsoluteMaxNumCards)]
             public short[] CardIds;
         }
 
@@ -610,6 +610,11 @@ namespace Lotd
             public bool SpeedDuel { get; set; }
 
             /// <summary>
+            /// Rush duel rules (3 field slots, start every turn with 5 cards, etc)
+            /// </summary>
+            public bool RushDuel { get; set; }
+
+            /// <summary>
             /// If true this will use use 4000 life points instead of 8000 (SpeedDuel must be true)
             /// </summary>
             public bool UseSpeedDuelLifePoints { get; set; }
@@ -697,6 +702,11 @@ namespace Lotd
             /// </summary>
             public int RandSeed { get; set; }
 
+            /// <summary>
+            /// If true use master rules 5 (2020 rules / link evolution v2)
+            /// </summary>
+            public bool MasterRules5 { get; set; }
+
             public StartDuelInfo()
             {
                 DeckIds = new int[Constants.MaxNumPlayers];
@@ -709,12 +719,10 @@ namespace Lotd
                 SetController(Player.TagOpponent, PlayerController.AI);
 
                 LifePoints = Constants.DefaultLifePoints;
-
                 UseSpeedDuelLifePoints = true;
-
                 StartingHandCount = -1;
-
                 CampaignDuelDeckIndex = -1;
+                MasterRules5 = true;
             }
 
             public void SetDeckId(Player player, int deckId)
