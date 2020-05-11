@@ -14,13 +14,14 @@ P1/P2/P3/P4 buttons sets the given player index to the selected deck. (P1 = play
 **Speed:** Used for speeding up the game. This may cause crashes at higher values. May cause issues if this tool is reopened and a different speed is applied.  
 **Tag Duel:** A tag duel consisting of four total players (all four players must have a deck assigned)  
 **Match Duel:** A best of three duel.  
-**Regular/Speed/Rush:** The type of duel format (regular duel / speed duel 3 monster/spell zones (4000 LP must be set manually) / rush duel (can summon multiple monsters each turn, and draw up to 5 cards a turn).  
+**Regular/Speed/Rush:** The type of duel format (regular duel / speed duel / rush duel).  
 **Skip Rock Paper Scissors:** This will skip the rock paper scissors screen.  
 **Full Reload:** This will go to the main menu before loading which reduces rendering issues but can increase loading times. Generally this should always be enabled to avoid issues.  
 **Rewards:** Rewards will be given for this duel (win cards / duel points).  
 **Master Rules 5:** Use master rules 5. If this isn't enabled then it will use master rules 4 (unless you're running the original LOTD which only has master rules 3).  
 **Starting Player:** Who starts the duel.  
 **Duel Arena:** The duel arena to play on.  
+**Custom life points / hand** Use customized starting hand count / life points.  
 **Life Points:** The number of starting life points for this duel.  
 **Start Hand:** The number of starting hand cards.  
 **P1/P2/P3/P4:** The name of the deck assigned to each player.  

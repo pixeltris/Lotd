@@ -29,7 +29,7 @@ namespace Lotd.FileFormats
             Clear();
 
             // There doesn't seem to be any identifier which says how many items to read. Assuming it reads until known max cards.
-            int numCards = Constants.NumCards;
+            int numCards = Constants.GetNumCards2(File.Archive.Version);
 
             long dataStart = reader.BaseStream.Position + (numCards * 8);
 

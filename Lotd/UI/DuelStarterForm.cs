@@ -642,6 +642,40 @@ namespace Lotd.UI
             }
         }
 
+        private void useCustomHandCountLP_CheckedChanged(object sender, EventArgs e)
+        {
+            lifePointsNumericUpDown.Enabled = useCustomHandCountLP.Checked;
+            startingHandNumericUpDown.Enabled = useCustomHandCountLP.Checked;
+            UpdateAutoLifePointsHandCount();
+        }
+
+        private void duelKindComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateAutoLifePointsHandCount();
+        }
+
+        private void UpdateAutoLifePointsHandCount()
+        {
+            if (!useCustomHandCountLP.Checked)
+            {
+                switch (duelKindComboBox.SelectedIndex)
+                {
+                    case 0:
+                        lifePointsNumericUpDown.Value = 8000;
+                        startingHandNumericUpDown.Value = 5;
+                        break;
+                    case 1:
+                        lifePointsNumericUpDown.Value = 4000;
+                        startingHandNumericUpDown.Value = 5;
+                        break;
+                    case 2:
+                        lifePointsNumericUpDown.Value = 8000;
+                        startingHandNumericUpDown.Value = 4;
+                        break;
+                }
+            }
+        }
+
         private class YdcDeckWrapper
         {
             public MemTools.YdcDeck Deck;

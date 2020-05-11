@@ -203,7 +203,7 @@ namespace Lotd.FileFormats
             cardsById.Add(cardId, card);
 
             // This is a hard coded value in native code. Might as well do the same check here.
-            Debug.Assert(cardId < Constants.MaxCardId + 1);
+            Debug.Assert(cardId < Constants.GetMaxCardId(Manager.Version) + 1);
 
             if (!Enum.IsDefined(typeof(MonsterType), monsterType) ||
                 !Enum.IsDefined(typeof(SpellType), spellType) ||

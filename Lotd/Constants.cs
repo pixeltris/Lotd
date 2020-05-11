@@ -8,9 +8,8 @@ namespace Lotd
     public static class Constants
     {
         public const GameVersion LatestVersion = GameVersion.LinkEvolution2;
-
         public const int AbsoluteMaxNumCards = 20000;// Keep this as a constant
-        public static int NumCards { get { return GetNumCards(Program.Version); } }
+
         public static int GetNumCards(GameVersion version)
         {
             switch (version)
@@ -24,7 +23,6 @@ namespace Lotd
             }
         }
 
-        public static int NumCards2 { get { return GetNumCards2(Program.Version); } }
         public static int GetNumCards2(GameVersion version)
         {
             switch (version)
@@ -49,12 +47,10 @@ namespace Lotd
                     return 14969;
             }
         }
-        public static ushort MaxCardId { get { return GetMaxCardId(Program.Version); } }
 
         /// <summary>
         /// Number of duel series (YuGiOh, GX, 5D, ZEXAL, ARCV)
         /// </summary>
-        public static int NumDuelSeries { get { return GetNumDuelSeries(Program.Version); } }
         public static int GetNumDuelSeries(GameVersion version)
         {
             switch (version)
@@ -81,7 +77,6 @@ namespace Lotd
         /// <summary>
         /// Number of deck slots available which map into deckdata_X.bin
         /// </summary>
-        public static int NumDeckDataSlots { get { return GetNumDeckDataSlots(Program.Version); } }
         public static int GetNumDeckDataSlots(GameVersion version)
         {
             switch (version)

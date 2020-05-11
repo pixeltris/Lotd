@@ -75,8 +75,8 @@ namespace Lotd
             Debug.Assert(Marshal.SizeOf(typeof(YdcDeck)) == 304);
             Debug.Assert(Marshal.SizeOf(typeof(YdcDeck)) == GameSaveData.GetDecksSize(Version) / Constants.NumUserDecks);
             Debug.Assert(Marshal.SizeOf(typeof(CardProps)) == 48);
-            Debug.Assert(Marshal.SizeOf(typeof(RawPackDefData)) == 56);
-            Debug.Assert(Marshal.SizeOf(typeof(DuelPlayerInfo)) == 3472);// LE = 3476
+            Debug.Assert(Marshal.SizeOf(typeof(RawPackDefData)) == 56);// TODO: Update for LE?
+            Debug.Assert(Marshal.SizeOf(typeof(DuelPlayerInfo)) == 3472);// LE = 3476. TODO: Update for LE
         }
 
         private void ValidateNativeScriptStructs()
@@ -350,7 +350,7 @@ namespace Lotd
             DeckEditFilterCards filterCards = new DeckEditFilterCards();
             filterCards.NumFilteredCards = cardIds.Length;
             filterCards.NumTotalCards = numTotalCards;
-            filterCards.CardIds = new short[Constants.NumCards];
+            filterCards.CardIds = new short[Constants.GetNumCards2(Version)];
             Array.Copy(cardIds, filterCards.CardIds, Math.Min(filterCards.CardIds.Length, cardIds.Length));
             CallNativeScriptFunctionWithStruct("SetDeckEditTrunkCards", filterCards);
 
@@ -387,7 +387,7 @@ namespace Lotd
             int numFilteredCards = ReadValue<int>(deckEditAddress + addresses.deckEditFilteredCardCountOffset);
             IntPtr cardsPtr = ReadValue<IntPtr>(deckEditAddress + addresses.deckEditCardsOffset);
 
-            if (numFilteredCards > Constants.NumCards)
+            if (numFilteredCards > Constants.GetNumCards2(Version))
             {
                 return new short[0];
             }
@@ -577,7 +577,7 @@ namespace Lotd
             {
                 return null;
             }
-            return ReadValues<CardState>(saveDataAddress, Constants.NumCards);
+            return ReadValues<CardState>(saveDataAddress, Constants.GetNumCards2(Version));
         }
 
         /// <summary>
@@ -587,7 +587,7 @@ namespace Lotd
         {
             CardState[] defaultOwnedCards = ReadDefaultOwnedCardsList();
             CardState[] ownedCards = ReadOwnedCardsList();
-            CardState[] result = new CardState[Constants.NumCards];
+            CardState[] result = new CardState[Constants.GetNumCards2(Version)];
             if (ownedCards != null)
             {
                 for (int i = 0; i < ownedCards.Length && i < result.Length; i++)
@@ -616,7 +616,7 @@ namespace Lotd
         /// <returns></returns>
         public CardState[] ReadDefaultOwnedCardsList()
         {
-            CardState[] result = new CardState[Constants.NumCards];
+            CardState[] result = new CardState[Constants.GetNumCards2(Version)];
             YdcDeck[] decks = ReadYdcDecks();
             Manager manager = Program.Manager;
             if (decks != null && manager != null && manager.CardManager != null)
@@ -648,7 +648,7 @@ namespace Lotd
 
                         foreach(short cardId in cardIds)
                         {
-                            if (cardId > 0 && cardId <= Constants.MaxCardId)
+                            if (cardId > 0 && cardId <= Constants.GetMaxCardId(Version))
                             {
                                 FileFormats.CardInfo card;
                                 if (manager.CardManager.Cards.TryGetValue(cardId, out card))
@@ -674,7 +674,7 @@ namespace Lotd
             {
                 return null;
             }
-            return ReadValues<CardState>(saveDataAddress + GameSaveData.GetCardListOffset(Version), Constants.NumCards);
+            return ReadValues<CardState>(saveDataAddress + GameSaveData.GetCardListOffset(Version), Constants.GetNumCards2(Version));
         }
 
         /// <summary>
@@ -1392,7 +1392,7 @@ namespace Lotd
         /// </summary>
         public YdcDeck[] ReadYdcDecks()
         {
-            YdcDeck[] decks = ReadValues<YdcDeck>(addresses.ydcDecksAddress, Constants.NumDeckDataSlots);
+            YdcDeck[] decks = ReadValues<YdcDeck>(addresses.ydcDecksAddress, Constants.GetNumDeckDataSlots(Version));
             CheckDecksForUnknownData(decks);
             return decks;
         }
@@ -1431,7 +1431,7 @@ namespace Lotd
         /// <returns></returns>
         public CardProps[] ReadCardProps()
         {
-            return ReadValues<CardProps>(addresses.cardPropsBinAddress, Constants.MaxCardId + 1);
+            return ReadValues<CardProps>(addresses.cardPropsBinAddress, Constants.GetMaxCardId(Version) + 1);
         }
 
         /// <summary>
@@ -1439,7 +1439,7 @@ namespace Lotd
         /// </summary>
         public void WriteCardProps(CardProps[] cardProps)
         {
-            Debug.Assert(cardProps.Length <= Constants.MaxCardId + 1);
+            Debug.Assert(cardProps.Length <= Constants.GetMaxCardId(Version) + 1);
             WriteValues(addresses.cardPropsBinAddress, cardProps);
         }
 
