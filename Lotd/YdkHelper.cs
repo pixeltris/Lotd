@@ -247,6 +247,14 @@ namespace Lotd
             AddAlternativeCard(alternativeCardNames, 14677, "Seraphim Papillon");//Seraphim Papillion
             AddAlternativeCard(alternativeCardNames, 14862, "A.I.Love Yousion");//A.I. Love Fusion
 
+            // These card ids were moved in Link Evolution
+            //73578229 6276
+            //69832741 5280
+
+            // These card ids were changed in Link Evolution (tokens only)
+            //14470846 3917 -> 13300
+            //14470847 3917 -> 13300
+
             using (WebClient client = new WebClient())
             {
                 client.Proxy = null;
