@@ -30,13 +30,39 @@ namespace Lotd
                 NativeScriptCompiler.CompileIfChanged();
             }
 
-            if (MessageBox.Show("Target LOTD original version from 2016?", "LOTD", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            Dictionary<GameVersion, string> installedVersions = new Dictionary<GameVersion, string>();
+            foreach (GameVersion version in Enum.GetValues(typeof(GameVersion)))
             {
-                Version = GameVersion.Lotd;
+                if (version == GameVersion.LinkEvolution1)
+                {
+                    continue;
+                }
+                string dir = LotdArchive.GetInstallDirectory(version);
+                if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                {
+                    installedVersions[version] = dir;
+                }
+            }
+
+            if (installedVersions.Count == 0)
+            {
+                MessageBox.Show("Failed to find LOTD install directory. Make sure you have LOTD installed via Steam (and hopefully not pirated!)");
+                return;
+            }
+            else if (installedVersions.Count == 1)
+            {
+                Version = installedVersions.First().Key;
             }
             else
             {
-                Version = GameVersion.LinkEvolution2;
+                if (MessageBox.Show("Target LOTD original version from 2016?", "LOTD", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Version = GameVersion.Lotd;
+                }
+                else
+                {
+                    Version = GameVersion.LinkEvolution2;
+                }
             }
 
             Manager = new Manager(Version);

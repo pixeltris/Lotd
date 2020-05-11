@@ -21,7 +21,7 @@ P1/P2/P3/P4 buttons sets the given player index to the selected deck. (P1 = play
 **Master Rules 5:** Use master rules 5. If this isn't enabled then it will use master rules 4 (unless you're running the original LOTD which only has master rules 3).  
 **Starting Player:** Who starts the duel.  
 **Duel Arena:** The duel arena to play on.  
-**Custom life points / hand** Use customized starting hand count / life points.  
+**Custom life points / hand:** Use customized starting hand count / life points.  
 **Life Points:** The number of starting life points for this duel.  
 **Start Hand:** The number of starting hand cards.  
 **P1/P2/P3/P4:** The name of the deck assigned to each player.  

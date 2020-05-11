@@ -213,17 +213,39 @@ namespace Lotd
                 }
             }
             // Manually fix a few others
-            alternativeCardNames["Necrolancer the Time-lord"] = Program.Manager.CardManager.Cards[4149];//Necrolancer the Timelord
-            alternativeCardNames["LaLa Li-Oon"] = Program.Manager.CardManager.Cards[4197];//LaLa Li-oon
-            alternativeCardNames["Master  Expert"] = Program.Manager.CardManager.Cards[4254];//Master & Expert
-            alternativeCardNames["Man-Eating Black Shark"] = Program.Manager.CardManager.Cards[4571];//Man-eating Black Shark
-            alternativeCardNames["Muko"] = Program.Manager.CardManager.Cards[5362];//Null and Void
-            alternativeCardNames["After The Struggle"] = Program.Manager.CardManager.Cards[5394];//After the Struggle
-            alternativeCardNames["Vampiric Orchis"] = Program.Manager.CardManager.Cards[5588];//Vampire Orchis
-            alternativeCardNames["B.E.S. Big Core"] = Program.Manager.CardManager.Cards[6199];//Big Core
-            alternativeCardNames["Supernatural Regeneration"] = Program.Manager.CardManager.Cards[8072];//Metaphysical Regeneration
-            alternativeCardNames["Silent Graveyard"] = Program.Manager.CardManager.Cards[8835];//Forbidden Graveyard
-            alternativeCardNames["Vampiric Koala"] = Program.Manager.CardManager.Cards[8858];//Vampire Koala
+            AddAlternativeCard(alternativeCardNames, 4149, "Necrolancer the Time-lord");//Necrolancer the Timelord
+            AddAlternativeCard(alternativeCardNames, 4197, "LaLa Li-Oon");//LaLa Li-oon
+            AddAlternativeCard(alternativeCardNames, 4254, "Master  Expert");//Master & Expert
+            AddAlternativeCard(alternativeCardNames, 4571, "Man-Eating Black Shark");//Man-eating Black Shark
+            AddAlternativeCard(alternativeCardNames, 5362, "Muko");//Null and Void
+            AddAlternativeCard(alternativeCardNames, 5394, "After The Struggle");//After the Struggle
+            AddAlternativeCard(alternativeCardNames, 5588, "Vampiric Orchis");//Vampire Orchis
+            AddAlternativeCard(alternativeCardNames, 6199, "B.E.S. Big Core");//Big Core
+            AddAlternativeCard(alternativeCardNames, 8072, "Supernatural Regeneration");//Metaphysical Regeneration
+            AddAlternativeCard(alternativeCardNames, 8835, "Silent Graveyard");//Forbidden Graveyard
+            AddAlternativeCard(alternativeCardNames, 8858, "Vampiric Koala");//Vampire Koala
+            // Link Evolution (2020)
+            AddAlternativeCard(alternativeCardNames, 6992, "Cu Chulainn the Awakened");//Cú Chulainn the Awakened
+            AddAlternativeCard(alternativeCardNames, 7331, "Fiendish Engine Omega");//Fiendish Engine Ω
+            AddAlternativeCard(alternativeCardNames, 7760, "Machine Lord Ur");//Machine Lord Ür
+            AddAlternativeCard(alternativeCardNames, 7790, "Beast Machine King Barbaros Ur");//Beast Machine King Barbaros Ür
+            AddAlternativeCard(alternativeCardNames, 8330, "Falchion Beta");//Falchionβ
+            AddAlternativeCard(alternativeCardNames, 9683, "Damage Vaccine Omega MAX");//Damage Vaccine Ω MAX
+            AddAlternativeCard(alternativeCardNames, 10771, "Marina, Princess of Sunflowers");//Mariña, Princess of Sunflowers
+            AddAlternativeCard(alternativeCardNames, 10925, "Chirubime, Princess of Autumn Leaves");//Chirubimé, Princess of Autumn Leaves
+            AddAlternativeCard(alternativeCardNames, 12865, "Abyss Actor - Twinkle Littlestar");//Abyss Actor - Twinkle Little Star
+            AddAlternativeCard(alternativeCardNames, 12996, "Gandora Giga Rays the Dragon of Destruction");//Gigarays Gandora the Dragon of Destruction
+            AddAlternativeCard(alternativeCardNames, 13017, "Number F0: Utopic Future - Future Slash");//Number F0: Utopic Future Slash
+            AddAlternativeCard(alternativeCardNames, 13018, "Raidraptor - Revolution Falcon - Airraid");//Raidraptor - Revolution Falcon
+            AddAlternativeCard(alternativeCardNames, 13203, "Tri-gate Wizard");//Tri-Gate Wizard
+            AddAlternativeCard(alternativeCardNames, 13453, "Fire Opalhead");//Fire Opal Head
+            AddAlternativeCard(alternativeCardNames, 13457, "Linklebell");//Linkerbell <--- not on ygoprodeck?
+            AddAlternativeCard(alternativeCardNames, 13840, "Hope Magician");//Magician of Hope
+            AddAlternativeCard(alternativeCardNames, 14221, "Utopic Onomatopeia");//Utopic Onomatopoeia
+            AddAlternativeCard(alternativeCardNames, 14341, "Performapal Kuribohrder");//Performapal Kuribohble
+            AddAlternativeCard(alternativeCardNames, 14383, "Card of Spirit");//Card of Fate
+            AddAlternativeCard(alternativeCardNames, 14677, "Seraphim Papillon");//Seraphim Papillion
+            AddAlternativeCard(alternativeCardNames, 14862, "A.I.Love Yousion");//A.I. Love Fusion
 
             using (WebClient client = new WebClient())
             {
@@ -262,6 +284,15 @@ namespace Lotd
             if (ydkIdToOfficialId.Count > 0)
             {
                 ValidateCardIds();
+            }
+        }
+
+        private static void AddAlternativeCard(Dictionary<string, CardInfo> alternativeCardNames, short id, string name)
+        {
+            CardInfo card;
+            if (Program.Manager.CardManager.Cards.TryGetValue(id, out card))
+            {
+                alternativeCardNames[name] = card;
             }
         }
 
