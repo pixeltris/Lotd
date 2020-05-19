@@ -48,6 +48,13 @@ namespace Lotd.UI
             startingPlayerComboBox.SelectedIndex = 0;
             duelKindComboBox.SelectedIndex = 0;
 
+            if (Program.Version != GameVersion.Lotd)
+            {
+                // Rewards are handled differently on LE?
+                duelRewardsCheckBox.Checked = false;
+                duelRewardsCheckBox.Enabled = false;
+            }
+
             ReloadDecks();
 
             filterDeckXyzCheckBox.CheckStateChanged += FilterDeckCheckBox_CheckStateChanged;

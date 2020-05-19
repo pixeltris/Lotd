@@ -35,7 +35,7 @@ namespace Lotd
                 modePlayerControllerAddress = (IntPtr)0x140C8D218;
                 modeAIModeAddress = (IntPtr)0x140C8D39C;
                 modeStartingLifePointsAddress = (IntPtr)0x140C8D370;
-                modeStartingPlayerAddress = (IntPtr)0x140C8D388;
+                modeStartingPlayerAddress = (IntPtr)0x140C8D384;
                 modeTurnTimeLimitEnabledAddress = (IntPtr)0x140C8D364;
                 modeTurnTimeLimitAddress = (IntPtr)0x140C8D368;
                 modeTutorialDuelAddress = (IntPtr)0x140C8D1EA;

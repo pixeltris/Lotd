@@ -1102,7 +1102,7 @@ namespace Lotd
 
             if (addresses.modeMasterRules != IntPtr.Zero)
             {
-                WriteValue<byte>(addresses.modeChallengeDuelAddress, (byte)(duelInfo.MasterRules5 ? 1 : 0));
+                WriteValue<byte>(addresses.modeMasterRules, (byte)(duelInfo.MasterRules5 ? 1 : 0));
             }
 
             // Set the controllers for each player (AI / player)

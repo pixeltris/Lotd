@@ -202,6 +202,31 @@ namespace Lotd
                     name = name.Replace("α", "Alpha");
                     alternativeName = true;
                 }
+                if (name.Contains("Ω"))
+                {
+                    name = name.Replace("Ω", "Omega");
+                    alternativeName = true;
+                }
+                if (name.Contains("Ür"))
+                {
+                    name = name.Replace("Ür", "Ur");
+                    alternativeName = true;
+                }
+                if (name.Contains("Cú"))
+                {
+                    name = name.Replace("Cú", "Cu");
+                    alternativeName = true;
+                }
+                if (name.Contains("ñ"))
+                {
+                    name = name.Replace("ñ", "n");
+                    alternativeName = true;
+                }
+                if (name.Contains("é"))
+                {
+                    name = name.Replace("é", "e");
+                    alternativeName = true;
+                }
                 if (name.Contains("The"))
                 {
                     name = name.Replace("The", "the");
@@ -226,20 +251,14 @@ namespace Lotd
             AddAlternativeCard(alternativeCardNames, 8858, "Vampiric Koala");//Vampire Koala
             // Link Evolution (2020)
             AddAlternativeCard(alternativeCardNames, 6992, "Cu Chulainn the Awakened");//Cú Chulainn the Awakened
-            AddAlternativeCard(alternativeCardNames, 7331, "Fiendish Engine Omega");//Fiendish Engine Ω
-            AddAlternativeCard(alternativeCardNames, 7760, "Machine Lord Ur");//Machine Lord Ür
-            AddAlternativeCard(alternativeCardNames, 7790, "Beast Machine King Barbaros Ur");//Beast Machine King Barbaros Ür
             AddAlternativeCard(alternativeCardNames, 8330, "Falchion Beta");//Falchionβ
-            AddAlternativeCard(alternativeCardNames, 9683, "Damage Vaccine Omega MAX");//Damage Vaccine Ω MAX
-            AddAlternativeCard(alternativeCardNames, 10771, "Marina, Princess of Sunflowers");//Mariña, Princess of Sunflowers
-            AddAlternativeCard(alternativeCardNames, 10925, "Chirubime, Princess of Autumn Leaves");//Chirubimé, Princess of Autumn Leaves
             AddAlternativeCard(alternativeCardNames, 12865, "Abyss Actor - Twinkle Littlestar");//Abyss Actor - Twinkle Little Star
             AddAlternativeCard(alternativeCardNames, 12996, "Gandora Giga Rays the Dragon of Destruction");//Gigarays Gandora the Dragon of Destruction
             AddAlternativeCard(alternativeCardNames, 13017, "Number F0: Utopic Future - Future Slash");//Number F0: Utopic Future Slash
             AddAlternativeCard(alternativeCardNames, 13018, "Raidraptor - Revolution Falcon - Airraid");//Raidraptor - Revolution Falcon
             AddAlternativeCard(alternativeCardNames, 13203, "Tri-gate Wizard");//Tri-Gate Wizard
             AddAlternativeCard(alternativeCardNames, 13453, "Fire Opalhead");//Fire Opal Head
-            AddAlternativeCard(alternativeCardNames, 13457, "Linklebell");//Linkerbell <--- not on ygoprodeck?
+            AddAlternativeCard(alternativeCardNames, 13457, "Linklebell");//Linkerbell
             AddAlternativeCard(alternativeCardNames, 13840, "Hope Magician");//Magician of Hope
             AddAlternativeCard(alternativeCardNames, 14221, "Utopic Onomatopeia");//Utopic Onomatopoeia
             AddAlternativeCard(alternativeCardNames, 14341, "Performapal Kuribohrder");//Performapal Kuribohble
@@ -250,6 +269,8 @@ namespace Lotd
             // These card ids were moved in Link Evolution
             //73578229 6276
             //69832741 5280
+            AddCardManually(73578229, 6276);
+            AddCardManually(69832741, 5280);
 
             // These card ids were changed in Link Evolution (tokens only)
             //14470846 3917 -> 13300
@@ -293,6 +314,12 @@ namespace Lotd
             {
                 ValidateCardIds();
             }
+        }
+
+        private static void AddCardManually(long ydkId, long officialId)
+        {
+            ydkIdToOfficialId[ydkId] = officialId;
+            officialIdToYdkId[officialId] = ydkId;
         }
 
         private static void AddAlternativeCard(Dictionary<string, CardInfo> alternativeCardNames, short id, string name)
