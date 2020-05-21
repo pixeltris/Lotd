@@ -1100,10 +1100,13 @@ namespace Lotd
 
             WriteValue<byte>(addresses.modeChallengeDuelAddress, (byte)(challengeDuel ? 1 : 0));
 
-            if (addresses.modeMasterRules != IntPtr.Zero)
+            /*if (addresses.modeMasterRules != IntPtr.Zero)
             {
+                // This doesn't work...
                 WriteValue<byte>(addresses.modeMasterRules, (byte)(duelInfo.MasterRules5 ? 1 : 0));
-            }
+                //WriteValue<uint>((IntPtr)0x140C8D360, 0x80);//(uint)(0xFFFFFFFF & 0xFFFFFF7F)); <--- sudden countdown and such (8)
+                //WriteValue<int>((IntPtr)0x140C8D364, 0x80);
+            }*/
 
             // Set the controllers for each player (AI / player)
             WriteValue<int>(addresses.modePlayerControllerAddress + (4 * GetPlayerIndex(Player.Self)), (int)duelInfo.GetController(Player.Self));

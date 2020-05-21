@@ -440,10 +440,14 @@ namespace Lotd
 
         public enum ScreenState
         {
+            LogoBlank = 1,
+
             /// <summary>
             /// Second logo that appears
             /// </summary>
             DeveloperLogo = 2,
+
+            LogoRating = 3,
 
             /// <summary>
             /// First logo that appears
@@ -455,6 +459,9 @@ namespace Lotd
             /// </summary>
             GameLogo = 5,
 
+            SignIn = 6,
+            CommonBg = 7,
+
             // 6 = clickable game logo?
             // 7 = transition between logo / main menu?
 
@@ -463,14 +470,16 @@ namespace Lotd
             /// <summary>
             /// Loading screen that is displayed before a duel
             /// </summary>
-            DuelLoadingScreen = 9,
+            DuelLoadingScreen = 9,//GameLoading
+
+            GameBegin = 10,
 
             // SeriesSelection = 10,
 
             /// <summary>
             /// Duel state after loading screen (this includes rock paper scissors)
             /// </summary>
-            Duel = 11,
+            Duel = 11,//ExGameDuel
 
             HelpAndOptions = 12,
             Settings = 13,
@@ -488,6 +497,8 @@ namespace Lotd
             /// The list of players when in multiplayer mode
             /// </summary>
             PlayersList = 19,
+
+            Pause = 20,
 
             DuelistChallenges = 21,
 
@@ -550,12 +561,15 @@ namespace Lotd
 
             MultiplayerLobby2 = 36,
 
+            LiveLoading = 37,
             // 37 = multiplayer duel?
 
             MultiplayerLeaderboars = 38,
 
             // "Join" menu in multiplayer
             MultiplayerJoin = 39,
+
+            SafetyZone = 40,
 
             /// <summary>
             /// "Select Series" menu

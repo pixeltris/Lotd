@@ -48,6 +48,15 @@ namespace Lotd.UI
             startingPlayerComboBox.SelectedIndex = 0;
             duelKindComboBox.SelectedIndex = 0;
 
+            foreach (MemTools.ScreenState screen in Enum.GetValues(typeof(MemTools.ScreenState)))
+            {
+                screenComboBox.Items.Add(screen);
+                if (screen == MemTools.ScreenState.MainMenu)
+                {
+                    screenComboBox.SelectedIndex = screenComboBox.Items.Count - 1;
+                }
+            }
+
             if (Program.Version != GameVersion.Lotd)
             {
                 // Rewards are handled differently on LE?
@@ -110,6 +119,16 @@ namespace Lotd.UI
             }
 
             Program.MemTools.SetTimeMultiplier((double)speedMultiplierNumericUpDown.Value, true);
+        }
+
+        private void goToSceeenButton_Click(object sender, EventArgs e)
+        {
+            if (!Program.MemTools.IsFullyLoaded)
+            {
+                return;
+            }
+
+            Program.MemTools.SetScreenState((MemTools.ScreenState)screenComboBox.SelectedItem);
         }
 
         private void unlockContentButtonButton_Click(object sender, EventArgs e)
@@ -406,6 +425,7 @@ namespace Lotd.UI
                     bool hasRitual = false;
                     bool hasSynchro = false;
                     bool hasFusion = false;
+                    bool hasLink = false;
                     foreach (short cardId in cardIds)
                     {
                         CardInfo card;
@@ -432,13 +452,18 @@ namespace Lotd.UI
                             {
                                 hasFusion = true;
                             }
+                            if (card.CardTypeFlags.HasFlag(CardTypeFlags.Link))
+                            {
+                                hasLink = true;
+                            }
                         }
                     }
                     if (!FilterMatched(filterDeckXyzCheckBox, hasXyz) ||
                         !FilterMatched(filterDeckPendulumCheckBox, hasPendulum) ||
                         !FilterMatched(filterDeckRitualCheckBox, hasRitual) ||
                         !FilterMatched(filterDeckSynchroCheckBox, hasSynchro) ||
-                        !FilterMatched(filterDeckFusionCheckBox, hasFusion))
+                        !FilterMatched(filterDeckFusionCheckBox, hasFusion) ||
+                        !FilterMatched(filterDeckLinkCheckBox, hasLink))
                     {
                         continue;
                     }
@@ -535,8 +560,8 @@ namespace Lotd.UI
             startDuelInfo.SkipRockPaperScissors = skipRockPaperScissorsCheckBox.Checked;
             startDuelInfo.LifePoints = (int)lifePointsNumericUpDown.Value;
             startDuelInfo.StartingHandCount = (int)startingHandNumericUpDown.Value;
+            startDuelInfo.RandSeed = (int)(uint)seedNumericUpDown.Value;
             startDuelInfo.FullReload = fullReloadCheckBox.Checked;
-            startDuelInfo.MasterRules5 = masterRules5CheckBox.Checked;
 
             startDuelInfo.SetAvatarId(MemTools.Player.Self, playerDecks[0].DeckAvatarId);
             startDuelInfo.SetAvatarId(MemTools.Player.Opponent, playerDecks[1].DeckAvatarId);

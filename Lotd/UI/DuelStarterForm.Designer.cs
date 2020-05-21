@@ -76,13 +76,17 @@
             this.speedMultiplierLabel = new System.Windows.Forms.Label();
             this.speedMultiplierApplyButton = new System.Windows.Forms.Button();
             this.duelSettingsPanel = new System.Windows.Forms.Panel();
+            this.seedNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.seedLabel = new System.Windows.Forms.Label();
+            this.useCustomHandCountLP = new System.Windows.Forms.CheckBox();
             this.duelKindComboBox = new System.Windows.Forms.ComboBox();
-            this.masterRules5CheckBox = new System.Windows.Forms.CheckBox();
             this.duelRewardsCheckBox = new System.Windows.Forms.CheckBox();
             this.unlockContentButtonButton = new System.Windows.Forms.Button();
             this.animationsButton = new System.Windows.Forms.Button();
             this.setsDecksPanel = new System.Windows.Forms.Panel();
-            this.useCustomHandCountLP = new System.Windows.Forms.CheckBox();
+            this.screenComboBox = new System.Windows.Forms.ComboBox();
+            this.goToSceeenButton = new System.Windows.Forms.Button();
+            this.filterDeckLinkCheckBox = new System.Windows.Forms.CheckBox();
             this.decksListPanel1.SuspendLayout();
             this.playerDeckButtonsPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -91,13 +95,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.startingHandNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.speedMultiplierNumericUpDown)).BeginInit();
             this.duelSettingsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.seedNumericUpDown)).BeginInit();
             this.setsDecksPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // tagDuelCheckBox
             // 
             this.tagDuelCheckBox.AutoSize = true;
-            this.tagDuelCheckBox.Location = new System.Drawing.Point(5, 28);
+            this.tagDuelCheckBox.Location = new System.Drawing.Point(5, 53);
             this.tagDuelCheckBox.Name = "tagDuelCheckBox";
             this.tagDuelCheckBox.Size = new System.Drawing.Size(70, 17);
             this.tagDuelCheckBox.TabIndex = 3;
@@ -107,7 +112,7 @@
             // matchDuelCheckBox
             // 
             this.matchDuelCheckBox.AutoSize = true;
-            this.matchDuelCheckBox.Location = new System.Drawing.Point(5, 51);
+            this.matchDuelCheckBox.Location = new System.Drawing.Point(5, 76);
             this.matchDuelCheckBox.Name = "matchDuelCheckBox";
             this.matchDuelCheckBox.Size = new System.Drawing.Size(81, 17);
             this.matchDuelCheckBox.TabIndex = 4;
@@ -121,7 +126,7 @@
             this.decksListBox.IntegralHeight = false;
             this.decksListBox.Location = new System.Drawing.Point(0, 136);
             this.decksListBox.Name = "decksListBox";
-            this.decksListBox.Size = new System.Drawing.Size(217, 319);
+            this.decksListBox.Size = new System.Drawing.Size(217, 354);
             this.decksListBox.TabIndex = 5;
             this.decksListBox.SelectedIndexChanged += new System.EventHandler(this.decksListBox_SelectedIndexChanged);
             // 
@@ -136,7 +141,7 @@
             this.decksListPanel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.decksListPanel1.Location = new System.Drawing.Point(0, 0);
             this.decksListPanel1.Name = "decksListPanel1";
-            this.decksListPanel1.Size = new System.Drawing.Size(217, 455);
+            this.decksListPanel1.Size = new System.Drawing.Size(217, 490);
             this.decksListPanel1.TabIndex = 6;
             // 
             // deckFilterTextBox
@@ -289,6 +294,7 @@
             // 
             // deckFilterPanel
             // 
+            this.deckFilterPanel.Controls.Add(this.filterDeckLinkCheckBox);
             this.deckFilterPanel.Controls.Add(this.filterDeckRitualCheckBox);
             this.deckFilterPanel.Controls.Add(this.filterDeckXyzCheckBox);
             this.deckFilterPanel.Controls.Add(this.filterDeckFusionCheckBox);
@@ -368,7 +374,7 @@
             // player1DeckLabel
             // 
             this.player1DeckLabel.AutoSize = true;
-            this.player1DeckLabel.Location = new System.Drawing.Point(3, 305);
+            this.player1DeckLabel.Location = new System.Drawing.Point(3, 333);
             this.player1DeckLabel.Name = "player1DeckLabel";
             this.player1DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player1DeckLabel.TabIndex = 7;
@@ -378,7 +384,7 @@
             // 
             this.duelArenaComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.duelArenaComboBox.FormattingEnabled = true;
-            this.duelArenaComboBox.Location = new System.Drawing.Point(80, 210);
+            this.duelArenaComboBox.Location = new System.Drawing.Point(80, 215);
             this.duelArenaComboBox.Name = "duelArenaComboBox";
             this.duelArenaComboBox.Size = new System.Drawing.Size(146, 21);
             this.duelArenaComboBox.TabIndex = 10;
@@ -386,7 +392,7 @@
             // lifePointsLabel
             // 
             this.lifePointsLabel.AutoSize = true;
-            this.lifePointsLabel.Location = new System.Drawing.Point(4, 260);
+            this.lifePointsLabel.Location = new System.Drawing.Point(4, 265);
             this.lifePointsLabel.Name = "lifePointsLabel";
             this.lifePointsLabel.Size = new System.Drawing.Size(59, 13);
             this.lifePointsLabel.TabIndex = 13;
@@ -395,7 +401,7 @@
             // lifePointsNumericUpDown
             // 
             this.lifePointsNumericUpDown.Enabled = false;
-            this.lifePointsNumericUpDown.Location = new System.Drawing.Point(67, 256);
+            this.lifePointsNumericUpDown.Location = new System.Drawing.Point(67, 261);
             this.lifePointsNumericUpDown.Maximum = new decimal(new int[] {
             60000,
             0,
@@ -415,7 +421,7 @@
             this.skipRockPaperScissorsCheckBox.AutoSize = true;
             this.skipRockPaperScissorsCheckBox.Checked = true;
             this.skipRockPaperScissorsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.skipRockPaperScissorsCheckBox.Location = new System.Drawing.Point(5, 97);
+            this.skipRockPaperScissorsCheckBox.Location = new System.Drawing.Point(5, 122);
             this.skipRockPaperScissorsCheckBox.Name = "skipRockPaperScissorsCheckBox";
             this.skipRockPaperScissorsCheckBox.Size = new System.Drawing.Size(149, 17);
             this.skipRockPaperScissorsCheckBox.TabIndex = 15;
@@ -425,7 +431,7 @@
             // player2DeckLabel
             // 
             this.player2DeckLabel.AutoSize = true;
-            this.player2DeckLabel.Location = new System.Drawing.Point(3, 324);
+            this.player2DeckLabel.Location = new System.Drawing.Point(3, 352);
             this.player2DeckLabel.Name = "player2DeckLabel";
             this.player2DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player2DeckLabel.TabIndex = 16;
@@ -434,7 +440,7 @@
             // player4DeckLabel
             // 
             this.player4DeckLabel.AutoSize = true;
-            this.player4DeckLabel.Location = new System.Drawing.Point(3, 362);
+            this.player4DeckLabel.Location = new System.Drawing.Point(3, 390);
             this.player4DeckLabel.Name = "player4DeckLabel";
             this.player4DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player4DeckLabel.TabIndex = 18;
@@ -443,7 +449,7 @@
             // player3DeckLabel
             // 
             this.player3DeckLabel.AutoSize = true;
-            this.player3DeckLabel.Location = new System.Drawing.Point(3, 343);
+            this.player3DeckLabel.Location = new System.Drawing.Point(3, 371);
             this.player3DeckLabel.Name = "player3DeckLabel";
             this.player3DeckLabel.Size = new System.Drawing.Size(26, 13);
             this.player3DeckLabel.TabIndex = 17;
@@ -452,7 +458,7 @@
             // startingHandNumericUpDown
             // 
             this.startingHandNumericUpDown.Enabled = false;
-            this.startingHandNumericUpDown.Location = new System.Drawing.Point(67, 280);
+            this.startingHandNumericUpDown.Location = new System.Drawing.Point(67, 285);
             this.startingHandNumericUpDown.Maximum = new decimal(new int[] {
             60000,
             0,
@@ -470,7 +476,7 @@
             // startHandLabel
             // 
             this.startHandLabel.AutoSize = true;
-            this.startHandLabel.Location = new System.Drawing.Point(4, 283);
+            this.startHandLabel.Location = new System.Drawing.Point(4, 288);
             this.startHandLabel.Name = "startHandLabel";
             this.startHandLabel.Size = new System.Drawing.Size(61, 13);
             this.startHandLabel.TabIndex = 19;
@@ -478,7 +484,7 @@
             // 
             // startDuelButton
             // 
-            this.startDuelButton.Location = new System.Drawing.Point(4, 403);
+            this.startDuelButton.Location = new System.Drawing.Point(4, 431);
             this.startDuelButton.Name = "startDuelButton";
             this.startDuelButton.Size = new System.Drawing.Size(75, 23);
             this.startDuelButton.TabIndex = 21;
@@ -489,7 +495,7 @@
             // player1AICheckBox
             // 
             this.player1AICheckBox.AutoSize = true;
-            this.player1AICheckBox.Location = new System.Drawing.Point(5, 381);
+            this.player1AICheckBox.Location = new System.Drawing.Point(5, 409);
             this.player1AICheckBox.Name = "player1AICheckBox";
             this.player1AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player1AICheckBox.TabIndex = 22;
@@ -501,7 +507,7 @@
             this.player2AICheckBox.AutoSize = true;
             this.player2AICheckBox.Checked = true;
             this.player2AICheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.player2AICheckBox.Location = new System.Drawing.Point(60, 381);
+            this.player2AICheckBox.Location = new System.Drawing.Point(60, 409);
             this.player2AICheckBox.Name = "player2AICheckBox";
             this.player2AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player2AICheckBox.TabIndex = 23;
@@ -513,7 +519,7 @@
             this.player3AICheckBox.AutoSize = true;
             this.player3AICheckBox.Checked = true;
             this.player3AICheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.player3AICheckBox.Location = new System.Drawing.Point(115, 381);
+            this.player3AICheckBox.Location = new System.Drawing.Point(115, 409);
             this.player3AICheckBox.Name = "player3AICheckBox";
             this.player3AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player3AICheckBox.TabIndex = 24;
@@ -525,7 +531,7 @@
             this.player4AICheckBox.AutoSize = true;
             this.player4AICheckBox.Checked = true;
             this.player4AICheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.player4AICheckBox.Location = new System.Drawing.Point(170, 381);
+            this.player4AICheckBox.Location = new System.Drawing.Point(170, 409);
             this.player4AICheckBox.Name = "player4AICheckBox";
             this.player4AICheckBox.Size = new System.Drawing.Size(49, 17);
             this.player4AICheckBox.TabIndex = 25;
@@ -545,7 +551,7 @@
             "Random",
             "Self",
             "Opponent"});
-            this.startingPlayerComboBox.Location = new System.Drawing.Point(80, 185);
+            this.startingPlayerComboBox.Location = new System.Drawing.Point(80, 190);
             this.startingPlayerComboBox.Name = "startingPlayerComboBox";
             this.startingPlayerComboBox.Size = new System.Drawing.Size(146, 21);
             this.startingPlayerComboBox.TabIndex = 26;
@@ -555,7 +561,7 @@
             this.fullReloadCheckBox.AutoSize = true;
             this.fullReloadCheckBox.Checked = true;
             this.fullReloadCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.fullReloadCheckBox.Location = new System.Drawing.Point(5, 120);
+            this.fullReloadCheckBox.Location = new System.Drawing.Point(5, 145);
             this.fullReloadCheckBox.Name = "fullReloadCheckBox";
             this.fullReloadCheckBox.Size = new System.Drawing.Size(79, 17);
             this.fullReloadCheckBox.TabIndex = 27;
@@ -565,7 +571,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(2, 189);
+            this.label1.Location = new System.Drawing.Point(2, 194);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(75, 13);
             this.label1.TabIndex = 28;
@@ -574,7 +580,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 215);
+            this.label2.Location = new System.Drawing.Point(2, 220);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(60, 13);
             this.label2.TabIndex = 29;
@@ -624,9 +630,12 @@
             // 
             // duelSettingsPanel
             // 
+            this.duelSettingsPanel.Controls.Add(this.goToSceeenButton);
+            this.duelSettingsPanel.Controls.Add(this.screenComboBox);
+            this.duelSettingsPanel.Controls.Add(this.seedNumericUpDown);
+            this.duelSettingsPanel.Controls.Add(this.seedLabel);
             this.duelSettingsPanel.Controls.Add(this.useCustomHandCountLP);
             this.duelSettingsPanel.Controls.Add(this.duelKindComboBox);
-            this.duelSettingsPanel.Controls.Add(this.masterRules5CheckBox);
             this.duelSettingsPanel.Controls.Add(this.duelRewardsCheckBox);
             this.duelSettingsPanel.Controls.Add(this.speedMultiplierLabel);
             this.duelSettingsPanel.Controls.Add(this.tagDuelCheckBox);
@@ -655,8 +664,40 @@
             this.duelSettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.duelSettingsPanel.Location = new System.Drawing.Point(217, 25);
             this.duelSettingsPanel.Name = "duelSettingsPanel";
-            this.duelSettingsPanel.Size = new System.Drawing.Size(278, 430);
+            this.duelSettingsPanel.Size = new System.Drawing.Size(278, 465);
             this.duelSettingsPanel.TabIndex = 36;
+            // 
+            // seedNumericUpDown
+            // 
+            this.seedNumericUpDown.Location = new System.Drawing.Point(67, 309);
+            this.seedNumericUpDown.Maximum = new decimal(new int[] {
+            -1,
+            0,
+            0,
+            0});
+            this.seedNumericUpDown.Name = "seedNumericUpDown";
+            this.seedNumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.seedNumericUpDown.TabIndex = 38;
+            // 
+            // seedLabel
+            // 
+            this.seedLabel.AutoSize = true;
+            this.seedLabel.Location = new System.Drawing.Point(4, 311);
+            this.seedLabel.Name = "seedLabel";
+            this.seedLabel.Size = new System.Drawing.Size(35, 13);
+            this.seedLabel.TabIndex = 37;
+            this.seedLabel.Text = "Seed:";
+            // 
+            // useCustomHandCountLP
+            // 
+            this.useCustomHandCountLP.AutoSize = true;
+            this.useCustomHandCountLP.Location = new System.Drawing.Point(6, 242);
+            this.useCustomHandCountLP.Name = "useCustomHandCountLP";
+            this.useCustomHandCountLP.Size = new System.Drawing.Size(143, 17);
+            this.useCustomHandCountLP.TabIndex = 36;
+            this.useCustomHandCountLP.Text = "Custom life points / hand";
+            this.useCustomHandCountLP.UseVisualStyleBackColor = true;
+            this.useCustomHandCountLP.CheckedChanged += new System.EventHandler(this.useCustomHandCountLP_CheckedChanged);
             // 
             // duelKindComboBox
             // 
@@ -666,30 +707,18 @@
             "Regular",
             "Speed",
             "Rush"});
-            this.duelKindComboBox.Location = new System.Drawing.Point(3, 70);
+            this.duelKindComboBox.Location = new System.Drawing.Point(3, 95);
             this.duelKindComboBox.Name = "duelKindComboBox";
             this.duelKindComboBox.Size = new System.Drawing.Size(118, 21);
             this.duelKindComboBox.TabIndex = 35;
             this.duelKindComboBox.SelectedIndexChanged += new System.EventHandler(this.duelKindComboBox_SelectedIndexChanged);
-            // 
-            // masterRules5CheckBox
-            // 
-            this.masterRules5CheckBox.AutoSize = true;
-            this.masterRules5CheckBox.Checked = true;
-            this.masterRules5CheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.masterRules5CheckBox.Location = new System.Drawing.Point(5, 166);
-            this.masterRules5CheckBox.Name = "masterRules5CheckBox";
-            this.masterRules5CheckBox.Size = new System.Drawing.Size(173, 17);
-            this.masterRules5CheckBox.TabIndex = 34;
-            this.masterRules5CheckBox.Text = "Master Rules 5 (Link Evolution)";
-            this.masterRules5CheckBox.UseVisualStyleBackColor = true;
             // 
             // duelRewardsCheckBox
             // 
             this.duelRewardsCheckBox.AutoSize = true;
             this.duelRewardsCheckBox.Checked = true;
             this.duelRewardsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.duelRewardsCheckBox.Location = new System.Drawing.Point(5, 143);
+            this.duelRewardsCheckBox.Location = new System.Drawing.Point(5, 168);
             this.duelRewardsCheckBox.Name = "duelRewardsCheckBox";
             this.duelRewardsCheckBox.Size = new System.Drawing.Size(68, 17);
             this.duelRewardsCheckBox.TabIndex = 33;
@@ -726,22 +755,43 @@
             this.setsDecksPanel.Size = new System.Drawing.Size(278, 25);
             this.setsDecksPanel.TabIndex = 37;
             // 
-            // useCustomHandCountLP
+            // screenComboBox
             // 
-            this.useCustomHandCountLP.AutoSize = true;
-            this.useCustomHandCountLP.Location = new System.Drawing.Point(6, 237);
-            this.useCustomHandCountLP.Name = "useCustomHandCountLP";
-            this.useCustomHandCountLP.Size = new System.Drawing.Size(143, 17);
-            this.useCustomHandCountLP.TabIndex = 36;
-            this.useCustomHandCountLP.Text = "Custom life points / hand";
-            this.useCustomHandCountLP.UseVisualStyleBackColor = true;
-            this.useCustomHandCountLP.CheckedChanged += new System.EventHandler(this.useCustomHandCountLP_CheckedChanged);
+            this.screenComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.screenComboBox.FormattingEnabled = true;
+            this.screenComboBox.Location = new System.Drawing.Point(4, 27);
+            this.screenComboBox.Name = "screenComboBox";
+            this.screenComboBox.Size = new System.Drawing.Size(118, 21);
+            this.screenComboBox.TabIndex = 39;
+            // 
+            // goToSceeenButton
+            // 
+            this.goToSceeenButton.Location = new System.Drawing.Point(125, 26);
+            this.goToSceeenButton.Name = "goToSceeenButton";
+            this.goToSceeenButton.Size = new System.Drawing.Size(39, 23);
+            this.goToSceeenButton.TabIndex = 40;
+            this.goToSceeenButton.Text = "Go";
+            this.goToSceeenButton.UseVisualStyleBackColor = true;
+            this.goToSceeenButton.Click += new System.EventHandler(this.goToSceeenButton_Click);
+            // 
+            // filterDeckLinkCheckBox
+            // 
+            this.filterDeckLinkCheckBox.AutoSize = true;
+            this.filterDeckLinkCheckBox.Checked = true;
+            this.filterDeckLinkCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.filterDeckLinkCheckBox.Location = new System.Drawing.Point(128, 28);
+            this.filterDeckLinkCheckBox.Name = "filterDeckLinkCheckBox";
+            this.filterDeckLinkCheckBox.Size = new System.Drawing.Size(46, 17);
+            this.filterDeckLinkCheckBox.TabIndex = 39;
+            this.filterDeckLinkCheckBox.Text = "Link";
+            this.filterDeckLinkCheckBox.ThreeState = true;
+            this.filterDeckLinkCheckBox.UseVisualStyleBackColor = true;
             // 
             // DuelStarterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(495, 455);
+            this.ClientSize = new System.Drawing.Size(495, 490);
             this.Controls.Add(this.duelSettingsPanel);
             this.Controls.Add(this.setsDecksPanel);
             this.Controls.Add(this.decksListPanel1);
@@ -759,6 +809,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.speedMultiplierNumericUpDown)).EndInit();
             this.duelSettingsPanel.ResumeLayout(false);
             this.duelSettingsPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.seedNumericUpDown)).EndInit();
             this.setsDecksPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -813,11 +864,15 @@
         private System.Windows.Forms.CheckBox filterDeckFusionCheckBox;
         private System.Windows.Forms.CheckBox filterDeckSynchroCheckBox;
         private System.Windows.Forms.CheckBox filterDeckPendulumCheckBox;
-        private System.Windows.Forms.CheckBox masterRules5CheckBox;
         private System.Windows.Forms.Button unlockContentButtonButton;
         private System.Windows.Forms.Button animationsButton;
         private System.Windows.Forms.Panel setsDecksPanel;
         private System.Windows.Forms.ComboBox duelKindComboBox;
         private System.Windows.Forms.CheckBox useCustomHandCountLP;
+        private System.Windows.Forms.NumericUpDown seedNumericUpDown;
+        private System.Windows.Forms.Label seedLabel;
+        private System.Windows.Forms.Button goToSceeenButton;
+        private System.Windows.Forms.ComboBox screenComboBox;
+        private System.Windows.Forms.CheckBox filterDeckLinkCheckBox;
     }
 }

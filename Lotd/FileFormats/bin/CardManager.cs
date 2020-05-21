@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -173,42 +174,45 @@ namespace Lotd.FileFormats
 
         private void LoadCardProp(CardInfo card, Dictionary<short, CardInfo> cardsById, uint a1, uint a2)
         {
-            uint first = (a1 << 18) | ((a1 & 0x7FC000 | a1 >> 18) >> 5);
+            BitVector32 bit1 = new BitVector32((int)a1);
+            BitVector32.Section bit1_mrk = BitVector32.CreateSection(16383);// offset 0, mask 16383 (0x3FFF)
+            BitVector32.Section bit1_attack = BitVector32.CreateSection(511, bit1_mrk);// offset 14, mask 511 (0x1FF)
+            BitVector32.Section bit1_defence = BitVector32.CreateSection(511, bit1_attack);// offset 23, mask 511 (0x1FF)
+            // All bits used
 
-            uint second = (((a2 & 1u) | (a2 << 21)) & 0x80000001 | ((a2 & 0x7800) | ((a2 & 0x780 | ((a2 & 0x7E) << 10)) << 8)) << 6 |
-                ((a2 & 0x38000 | ((a2 & 0x7C0000 | ((a2 & 0x7800000 | (a2 >> 8) & 0x780000) >> 9)) >> 8)) >> 1));
+            BitVector32 bit2 = new BitVector32((int)a2);
+            BitVector32.Section bit2_exist = BitVector32.CreateSection(1);// offset 0, mask 1 (0x1)
+            BitVector32.Section bit2_kind = BitVector32.CreateSection(63, bit2_exist);// offset 1, mask 63 (0x3F)
+            BitVector32.Section bit2_attr = BitVector32.CreateSection(15, bit2_kind);// offset 7, mask 15 (0xF)
+            BitVector32.Section bit2_level = BitVector32.CreateSection(15, bit2_attr);// offset 11, mask 15 (0xF)
+            BitVector32.Section bit2_icon = BitVector32.CreateSection(7, bit2_level);// offset 15, mask 7 (0x7)
+            BitVector32.Section bit2_type = BitVector32.CreateSection(31, bit2_icon);// offset 18, mask 31 (0x1F)
+            BitVector32.Section bit2_scaleL = BitVector32.CreateSection(15, bit2_type);// offset 23, mask 15 (0xF)
+            BitVector32.Section bit2_scaleR = BitVector32.CreateSection(15, bit2_scaleL);// offset 27, mask 15 (0xF)
+            
+            BitVector32.Section bit2_unused = BitVector32.CreateSection(1, bit2_scaleR);// offset 31, mask 1
+            Debug.Assert(bit2[bit2_unused] == 0);
 
-            short cardId = (short)((first >> 18) & 0x3FFF);
-            uint atk = ((first >> 9) & 0x1FF);
-            uint def = (first & 0x1FF);
-            CardType cardType = (CardType)((second >> 25) & 0x3F);
-            CardAttribute attribute = (CardAttribute)((second >> 21) & 0xF);
-            uint level = (second >> 17) & 0xF;
-            SpellType spellType = (SpellType)((second >> 14) & 7);
-            MonsterType monsterType = (MonsterType)((second >> 9) & 0x1F);
-            uint pendulumScale1 = (second >> 1) & 0xF;
-            uint pendulumScale2 = (second >> 5) & 0xF;
+            card.CardId = (short)bit1[bit1_mrk];
+            card.Atk = (int)(bit1[bit1_attack] * 10);
+            card.Def = (int)(bit1[bit1_defence] * 10);
+            card.Level = (byte)bit2[bit2_level];
+            card.Attribute = (CardAttribute)bit2[bit2_attr];
+            card.CardType = (CardType)bit2[bit2_kind];
+            card.SpellType = (SpellType)bit2[bit2_icon];
+            card.MonsterType = (MonsterType)bit2[bit2_type];
+            card.PendulumScale1 = (byte)bit2[bit2_scaleL];
+            card.PendulumScale2 = (byte)bit2[bit2_scaleR];
 
-            card.CardId = cardId;
-            card.Atk = (int)(atk * 10);
-            card.Def = (int)(def * 10);
-            card.Level = (byte)level;
-            card.Attribute = attribute;
-            card.CardType = cardType;
-            card.SpellType = spellType;
-            card.MonsterType = monsterType;
-            card.PendulumScale1 = (byte)pendulumScale1;
-            card.PendulumScale2 = (byte)pendulumScale2;
-
-            cardsById.Add(cardId, card);
+            cardsById.Add(card.CardId, card);
 
             // This is a hard coded value in native code. Might as well do the same check here.
-            Debug.Assert(cardId < Constants.GetMaxCardId(Manager.Version) + 1);
+            Debug.Assert(card.CardId < Constants.GetMaxCardId(Manager.Version) + 1);
 
-            if (!Enum.IsDefined(typeof(MonsterType), monsterType) ||
-                !Enum.IsDefined(typeof(SpellType), spellType) ||
-                !Enum.IsDefined(typeof(CardType), cardType) ||
-                !Enum.IsDefined(typeof(CardAttribute), attribute))
+            if (!Enum.IsDefined(typeof(MonsterType), card.MonsterType) ||
+                !Enum.IsDefined(typeof(SpellType), card.SpellType) ||
+                !Enum.IsDefined(typeof(CardType), card.CardType) ||
+                !Enum.IsDefined(typeof(CardAttribute), card.Attribute))
             {
                 //Debug.Assert(false);// TODO: Update for LE
             }
@@ -647,7 +651,7 @@ namespace Lotd.FileFormats
             get
             {
                 return CardTypeFlags.HasFlag(CardTypeFlags.Xyz) || CardTypeFlags.HasFlag(CardTypeFlags.Fusion) ||
-                    CardTypeFlags.HasFlag(CardTypeFlags.Synchro);
+                    CardTypeFlags.HasFlag(CardTypeFlags.Synchro) || CardTypeFlags.HasFlag(CardTypeFlags.Link);
             }
         }
 
@@ -722,6 +726,11 @@ namespace Lotd.FileFormats
                 if (cardFlags.HasFlag(CardTypeFlags.Ritual))
                 {
                     return CardFrameType.Ritual;
+                }
+
+                if (cardFlags.HasFlag(CardTypeFlags.Link))
+                {
+                    return CardFrameType.Link;
                 }
 
                 if (cardFlags.HasFlag(CardTypeFlags.Effect) ||
@@ -813,14 +822,15 @@ namespace Lotd.FileFormats
                 //case CardType.SynchoPendulumEffect: return CardTypeFlags.Synchro | CardTypeFlags.Pendulum | CardTypeFlags.Effect;
                 //case CardType.UnionTunerEffect: return CardTypeFlags.Union | CardTypeFlags.Tuner | CardTypeFlags.Effect;
                 //case CardType.RitualSpiritEffect: return CardTypeFlags.Ritual | CardTypeFlags.Spirit | CardTypeFlags.Effect;
-                case CardType.AnyNormal: return CardTypeFlags.Any | CardTypeFlags.Normal;
+                case CardType.Link: return CardTypeFlags.Link;
+                /*case CardType.AnyNormal: return CardTypeFlags.Any | CardTypeFlags.Normal;
                 case CardType.AnyFusion: return CardTypeFlags.Any | CardTypeFlags.Fusion;
                 case CardType.AnyFlip: return CardTypeFlags.Any | CardTypeFlags.Flip;
                 case CardType.AnyPendulum: return CardTypeFlags.Any | CardTypeFlags.Pendulum;
                 case CardType.AnyRitual: return CardTypeFlags.Any | CardTypeFlags.Ritual;
                 case CardType.AnySynchro: return CardTypeFlags.Any | CardTypeFlags.Synchro;
                 case CardType.AnyTuner: return CardTypeFlags.Any | CardTypeFlags.Tuner;
-                case CardType.AnyXyz: return CardTypeFlags.Any | CardTypeFlags.Xyz;
+                case CardType.AnyXyz: return CardTypeFlags.Any | CardTypeFlags.Xyz;*/
                 default:
                     return 0;// TODO: Update for LE //throw new NotImplementedException("Unhandled CardType->CardTypeFlags conversion " + cardType);
             }
@@ -927,6 +937,7 @@ namespace Lotd.FileFormats
                 case CardTypeFlags.Flip: return "Flip";
                 case CardTypeFlags.Pendulum: return "Pendulum";
                 //case CardTypeFlags.SpecialSummon: return "";
+                case CardTypeFlags.Link: return "Link";
             }
         }
     }
@@ -988,7 +999,9 @@ namespace Lotd.FileFormats
         //RitualSpiritEffect = 38,// unused
         //_______ = 39,// unused - underscores??
 
-        // These values are used for tagdata/taginfo
+        Link = 43
+
+        /*// These values are used for tagdata/taginfo
         AnyNormal = 37,// NORMAL*
         AnySynchro = 38,// SYNC*
         AnyXyz = 39,// XYZ*
@@ -996,7 +1009,7 @@ namespace Lotd.FileFormats
         AnyFusion = 41,// FUSION*
         AnyRitual = 42,// RITUAL*
         AnyPendulum = 43,// PEND*
-        AnyFlip = 44,// FLIP*
+        AnyFlip = 44,// FLIP**/
     }
 
     /// <summary>
@@ -1024,8 +1037,7 @@ namespace Lotd.FileFormats
         Flip = 1 << 15,
         Pendulum = 1 << 16,
         SpecialSummon = 1 << 17,// "This monster cannot be Normal Summoned or Set"
-
-        Link = 1 << 18,// Not in LOTD
+        Link = 1 << 18,
 
         Normal = 1 << 19,// Special flag used for finding related cards
         Any = 1 << 20,// Special flag used for finding related cards
@@ -1096,6 +1108,7 @@ namespace Lotd.FileFormats
         Xyz,
         Spell,
         Trap,
+        Link
     }
 
     public enum CardLimitation
