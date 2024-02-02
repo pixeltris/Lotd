@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Lotd
 {
@@ -432,7 +431,6 @@ namespace Lotd
             }
         }
 
-        private static string lotd_dir;
         public static string GetInstallDirectory(GameVersion version)
         {
             string installDir = null;
@@ -476,18 +474,6 @@ namespace Lotd
 
             if (string.IsNullOrEmpty(installDir) || !Directory.Exists(installDir))
             {
-                if (version == GameVersion.LinkEvolution2 && lotd_dir == null)
-                {
-                    FolderBrowserDialog dialog = new FolderBrowserDialog();
-                    if (dialog.ShowDialog() == DialogResult.OK && Directory.Exists(dialog.SelectedPath))
-                        lotd_dir = dialog.SelectedPath;
-                }
-
-                if (version == GameVersion.LinkEvolution2)
-                {
-                    return lotd_dir;
-                }
-
                 try
                 {
                     using (var root = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))

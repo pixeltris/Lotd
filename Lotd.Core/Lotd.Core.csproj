@@ -8,6 +8,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,16 +20,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="BlockedAnimations.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="BlockedAnimations.txt">
+		<None Update="BlockedAnimations.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
+		</None>
 		<None Update="AnimationNames.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
